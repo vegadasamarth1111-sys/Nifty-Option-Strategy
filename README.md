@@ -19,7 +19,7 @@ A complete 10-year backtesting system for Nifty 50 weekly options strategies, bu
 | `NIFTY50_15min_angelone.csv` | 15-minute intraday data (Angel One) |
 | `NIFTY50_1min_angelone.csv` | 1-minute intraday data (Angel One) |
 
----
+
 
 ## How to Run
 
