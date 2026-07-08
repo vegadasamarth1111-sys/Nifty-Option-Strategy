@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>&#9889; Nifty Options Strategy Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060d1f;--bg2:#0a1628;--bg3:#0f1e35;--card:#111d33;--bdr:#1e3050;--acc:#00d4ff;--acc2:#7c3aed;--grn:#10b981;--red:#ef4444;--ylw:#f59e0b;--orn:#f97316;--txt:#e2e8f0;--mut:#64748b;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Inter",sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;}
+body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+.hdr{background:linear-gradient(135deg,rgba(10,22,40,.96),rgba(6,13,31,.98));border-bottom:1px solid var(--bdr);padding:18px 36px;display:flex;align-items:center;gap:14px;z-index:10;box-shadow:0 4px 30px rgba(0,0,0,.4);position:relative;}
+.htitle{font-size:1.3rem;font-weight:900;background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hsub{font-size:.72rem;color:var(--mut);margin-top:2px;}
+.hbadges{margin-left:auto;display:flex;gap:8px;}
+.bdg{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:20px;padding:4px 12px;font-size:.68rem;font-weight:700;color:var(--acc);}
+.bdg.g{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.2);color:var(--grn);}
+.wrap{max-width:1200px;margin:0 auto;padding:24px 36px;position:relative;z-index:1;}
+.plbl{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);margin-bottom:10px;}
+/* Strategy grid */
+.sg{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:22px;}
+.sb{background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:9px 7px;cursor:pointer;transition:all .2s;text-align:center;font-family:inherit;color:var(--txt);}
+.sb:hover{border-color:var(--acc);background:var(--bg3);transform:translateY(-1px);}
+.sb.active{border-color:var(--acc);background:rgba(0,212,255,.06);box-shadow:0 0 0 1px rgba(0,212,255,.15);}
+.sb.active.ss{border-color:var(--grn);background:rgba(16,185,129,.06);box-shadow:0 0 0 1px rgba(16,185,129,.15);}
+.sb .si{font-size:.58rem;font-weight:800;color:var(--mut);}
+.sb.active .si{color:var(--acc);}
+.sb.active.ss .si{color:var(--grn);}
+.sb .sn{font-size:.65rem;font-weight:700;margin-top:2px;line-height:1.3;}
+.sb .stype{font-size:.52rem;margin-top:3px;font-weight:700;border-radius:3px;padding:1px 4px;display:inline-block;}
+.sell-tag{background:rgba(16,185,129,.15);color:var(--grn);border:1px solid rgba(16,185,129,.3);}
+.buy-tag{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.25);}
+/* Main layout */
+.mg{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start;}
+/* Calc card */
+.cc{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px;position:relative;overflow:hidden;}
+.cc::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--acc),var(--acc2));}
+.cc.sm::before{background:linear-gradient(90deg,var(--grn),#059669);}
+/* Strategy header */
+.sh{display:flex;align-items:flex-start;gap:12px;margin-bottom:18px;padding:13px;background:var(--bg3);border-radius:9px;border:1px solid var(--bdr);}
+.shi{font-size:1.7rem;flex-shrink:0;}
+.shn{font-size:.98rem;font-weight:800;}
+.shd{font-size:.7rem;color:var(--mut);margin-top:4px;line-height:1.5;}
+.sht{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;}
+.tg{font-size:.54rem;font-weight:700;border-radius:3px;padding:2px 6px;text-transform:uppercase;letter-spacing:.04em;}
+.tgs{background:rgba(16,185,129,.15);color:var(--grn);border:1px solid rgba(16,185,129,.3);}
+.tgb{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2);}
+.tgd{background:rgba(0,212,255,.1);color:var(--acc);border:1px solid rgba(0,212,255,.2);}
+.tgw{background:rgba(245,158,11,.1);color:var(--ylw);border:1px solid rgba(245,158,11,.2);}
+.tgt{background:rgba(249,115,22,.1);color:var(--orn);border:1px solid rgba(249,115,22,.2);}
+/* Section title */
+.stl{font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin:16px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--bdr);}
+.stl:first-child{margin-top:0;}
+/* Inputs */
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.ig3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;}
+.fd{display:flex;flex-direction:column;gap:4px;}
+.fd label{font-size:.6rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;}
+.fd input,.fd select{background:var(--bg3);border:1px solid var(--bdr);border-radius:7px;padding:9px 12px;color:var(--txt);font-family:"JetBrains Mono",monospace;font-size:.83rem;font-weight:600;transition:all .2s;outline:none;width:100%;}
+.fd input:focus,.fd select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(0,212,255,.1);}
+.fd input.ro{color:var(--acc);cursor:default;opacity:.8;}
+.fd .ht{font-size:.57rem;color:var(--mut);margin-top:1px;}
+/* Stop check */
+.sck{border-radius:9px;padding:11px 15px;margin:10px 0;display:flex;align-items:center;gap:10px;font-weight:700;font-size:.8rem;transition:all .3s;}
+.sck.hold{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:var(--grn);}
+.sck.exit{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--red);}
+.sck.neutral{background:rgba(100,116,139,.1);border:1px solid rgba(100,116,139,.2);color:var(--mut);}
+.sck .ico{font-size:1.2rem;flex-shrink:0;}
+.sck .det{font-size:.67rem;font-weight:400;opacity:.8;margin-top:1px;}
+/* Signal check */
+.sgck{border-radius:9px;padding:10px 14px;margin-bottom:12px;font-size:.76rem;font-weight:600;}
+.sgck.valid{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);color:var(--grn);}
+.sgck.invalid{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);}
+.sgck.neutral{background:rgba(100,116,139,.08);border:1px solid rgba(100,116,139,.2);color:var(--mut);}
+/* Calc button */
+.cbtn{width:100%;padding:12px;border:none;border-radius:9px;cursor:pointer;font-family:inherit;font-size:.84rem;font-weight:800;letter-spacing:.04em;background:linear-gradient(135deg,var(--acc),#0099cc);color:#000;transition:all .2s;text-transform:uppercase;margin-top:10px;}
+.cbtn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,212,255,.3);}
+.cbtn.sell{background:linear-gradient(135deg,var(--grn),#059669);color:#fff;}
+.cbtn.sell:hover{box-shadow:0 6px 20px rgba(16,185,129,.3);}
+/* Strike display */
+.sdp{background:var(--bg3);border:1px solid var(--bdr);border-radius:9px;padding:11px;margin:10px 0;}
+.sr{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:.74rem;}
+.sr .sk{color:var(--mut);}
+.sr .sv{font-family:"JetBrains Mono",monospace;font-weight:700;color:var(--acc);}
+.sr .sv.sell{color:var(--grn);}.sr .sv.buy{color:var(--red);}.sr .sv.atm{color:var(--ylw);}
+/* Result card */
+.rc{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:20px;position:sticky;top:16px;}
+.rc::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;border-radius:14px 14px 0 0;background:linear-gradient(90deg,var(--grn),var(--acc));}
+.pb{text-align:center;padding:16px;background:var(--bg3);border-radius:10px;margin-bottom:12px;border:1px solid var(--bdr);}
+.plbl2{font-size:.6rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.08em;}
+.pv{font-size:1.9rem;font-weight:900;margin-top:4px;font-family:"JetBrains Mono",monospace;}
+.pv.profit{color:var(--grn);}.pv.loss{color:var(--red);}.pv.neutral{color:var(--mut);}
+.ps{font-size:.67rem;color:var(--mut);margin-top:2px;}
+.mg2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;}
+.mt{background:var(--bg3);border:1px solid var(--bdr);border-radius:7px;padding:8px 10px;}
+.mt .ml{font-size:.57rem;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+.mt .mv{font-size:.88rem;font-weight:800;margin-top:2px;font-family:"JetBrains Mono",monospace;}
+.mv.up{color:var(--grn);}.mv.dn{color:var(--red);}.mv.ac{color:var(--acc);}.mv.yl{color:var(--ylw);}
+.bd{background:var(--bg3);border-radius:9px;padding:11px;border:1px solid var(--bdr);}
+.brow{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:.73rem;border-bottom:1px solid rgba(30,48,80,.5);}
+.brow:last-child{border-bottom:none;font-weight:700;font-size:.76rem;padding-top:6px;}
+.brow .bl{color:var(--mut);}
+.brow .bv{font-family:"JetBrains Mono",monospace;font-weight:600;}
+/* Verdict */
+.vd{border-radius:11px;padding:12px 14px;text-align:center;margin-top:10px;}
+.vd.hold{background:rgba(16,185,129,.1);border:2px solid rgba(16,185,129,.3);}
+.vd.exit{background:rgba(239,68,68,.1);border:2px solid rgba(239,68,68,.3);}
+.vd.wait{background:rgba(100,116,139,.08);border:2px solid rgba(100,116,139,.15);}
+.vd .vi{font-size:1.7rem;}
+.vd .vt{font-size:.9rem;font-weight:900;margin-top:4px;}
+.vd .vs{font-size:.67rem;color:var(--mut);margin-top:2px;}
+.ftr{text-align:center;padding:16px;color:var(--mut);font-size:.67rem;margin-top:6px;}
+@media(max-width:900px){.wrap{padding:12px;}.mg{grid-template-columns:1fr;}.sg{grid-template-columns:repeat(3,1fr);}.rc{position:static;}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <span style="font-size:1.7rem">&#9889;</span>
+  <div>
+    <div class="htitle">Nifty 50 Options &#8212; Strategy Calculator</div>
+    <div class="hsub">All 15 Strategies &middot; Real-Time P&amp;L &middot; Stop-Loss Checker &middot; Signal Validator</div>
+  </div>
+  <div class="hbadges">
+    <div class="bdg g">4 SELL</div>
+    <div class="bdg">11 BUY</div>
+    <div class="bdg">Live Calc</div>
+  </div>
+</div>
+<div class="wrap">
+  <div class="plbl">&#128202; Select Strategy</div>
+  <div class="sg" id="sg"></div>
+  <div class="mg">
+    <div>
+      <div class="cc" id="cc">
+        <div class="sh">
+          <div class="shi" id="sI">&#128200;</div>
+          <div>
+            <div class="shn" id="sN">Select a Strategy</div>
+            <div class="shd" id="sD">Choose one of the 15 strategies above to begin.</div>
+            <div class="sht" id="sT"></div>
+          </div>
+        </div>
+        <div id="cb2"><div style="text-align:center;padding:30px;color:var(--mut)">&#8593; Select a strategy above to load calculator</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="rc">
+        <div class="stl" style="margin-top:0">&#128202; Live Results</div>
+        <div class="pb">
+          <div class="plbl2">Estimated Net P&amp;L</div>
+          <div class="pv neutral" id="rP">&#8212;</div>
+          <div class="ps" id="rPS">Enter parameters to calculate</div>
+        </div>
+        <div class="mg2">
+          <div class="mt"><div class="ml">Lots</div><div class="mv ac" id="rL">&#8212;</div></div>
+          <div class="mt"><div class="ml">Units</div><div class="mv ac" id="rU">&#8212;</div></div>
+          <div class="mt"><div class="ml">Gross P&amp;L</div><div class="mv" id="rG">&#8212;</div></div>
+          <div class="mt"><div class="ml">Txn Cost</div><div class="mv dn" id="rT">&#8212;</div></div>
+        </div>
+        <div class="bd">
+          <div class="brow"><span class="bl">Gross P&amp;L</span><span class="bv" id="bG">&#8212;</span></div>
+          <div class="brow"><span class="bl">Slippage (0.5%)</span><span class="bv" id="bS">&#8212;</span></div>
+          <div class="brow"><span class="bl">Transaction</span><span class="bv" id="bT">&#8212;</span></div>
+          <div class="brow"><span class="bl">Net P&amp;L</span><span class="bv" id="bN">&#8212;</span></div>
+        </div>
+        <div class="vd wait" id="rV">
+          <div class="vi">&#127919;</div>
+          <div class="vt" style="color:var(--mut)">Awaiting Input</div>
+          <div class="vs">Fill parameters to get recommendation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr">&#9889; Educational purposes only &middot; Not financial advice &middot; Past performance &ne; future results</div>
+</div>
+<script>
+var S={
+  S1:{n:"ORB-15 Breakout",i:"&#128293;",sell:false,daily:true,thu:false,d:"Buy ATM breakout of first 15-min range (9:15-9:25 AM). Entry 9:30 AM, Exit 1:00 PM."},
+  S2:{n:"VIX + Gap Signal",i:"&#128225;",sell:false,daily:false,thu:false,d:"Buy Call/Put based on VIX + overnight gap. Entry 9:20 AM, Exit 12:30 PM."},
+  S3:{n:"Expiry Straddle Sell",i:"&#128142;",sell:true,daily:false,thu:true,d:"SELL ATM Straddle on Thursdays at 9:20 AM. Collect theta. Exit 2:30 PM. No stop-loss."},
+  S4:{n:"Monday Gap Reversal",i:"&#8617;&#65039;",sell:false,daily:false,thu:false,d:"Buy reversal on Monday gap > 0.5%. Entry 9:20 AM, Exit 11:00 AM."},
+  S5:{n:"3-Day Momentum Buy",i:"&#128200;",sell:false,daily:false,thu:false,d:"Buy after 3 consecutive same-direction days. Entry 9:20 AM, Exit 12:00 PM."},
+  S6:{n:"High-VIX Straddle Buy",i:"&#9889;",sell:false,daily:false,thu:false,d:"Buy ATM Straddle when VIX > 20. Exit 1:00 PM."},
+  S7:{n:"First Candle Direction",i:"&#128269;",sell:false,daily:true,thu:false,d:"DAILY: 9:15 AM candle direction sets bias. Entry 9:20 AM, Exit 11:00 AM."},
+  S8:{n:"10AM Trend Follow",i:"&#128202;",sell:false,daily:true,thu:false,d:"DAILY: Confirm trend at 10 AM vs open (> 0.2% move). Exit 12:30 PM."},
+  S9:{n:"11:30AM Reversal Buy",i:"&#128260;",sell:false,daily:true,thu:false,d:"DAILY: Fade morning move at 11:30 AM if > 0.5% from open. Exit 1:30 PM."},
+  S10:{n:"Power Hour Follow",i:"&#9200;",sell:false,daily:true,thu:false,d:"DAILY: Follow day trend at 2:15 PM. Exit 3:20 PM."},
+  S11:{n:"1.5hr Range Breakout",i:"&#128207;",sell:false,daily:true,thu:false,d:"DAILY: Break of 1.5-hour range at 10:45 AM. Exit 1:15 PM."},
+  S12:{n:"Morning Surge Scalp",i:"&#128640;",sell:false,daily:true,thu:false,d:"DAILY: Volatile open (> 0.4% range) surge at 9:45 AM. Exit 11:30 AM."},
+  S13:{n:"Daily Straddle Sell+Stop",i:"&#128176;",sell:true,daily:true,thu:false,d:"SELL DAILY: Sell ATM Straddle at 9:30 AM. Stop if Nifty moves > 0.6% from ATM by 12 PM. Else hold to 2:30 PM."},
+  S14:{n:"Iron Condor Sell Daily",i:"&#129413;",sell:true,daily:true,thu:false,d:"SELL DAILY: Iron Condor at 10 AM (sell 0.5% OTM, buy 1.5% OTM hedge). Exit 2:30 PM."},
+  S15:{n:"Mid-Week Strangle Sell",i:"&#127919;",sell:true,daily:false,thu:false,d:"SELL Tue/Wed/Thu: Sell 1% OTM Strangle at 9:30 AM. Stop if > 1.2% move by 1 PM. Else hold to 2:30 PM."}
+};
+var LS=75,SLP=0.005,TX=20,cur=null;
+var g=document.getElementById("sg");
+Object.keys(S).forEach(function(id){
+  var s=S[id],b=document.createElement("button");
+  b.className="sb"+(s.sell?" ss":"");
+  b.id="sb_"+id;
+  b.innerHTML='<div class="si">'+id+'</div><div class="sn">'+s.n+'</div><span class="stype '+(s.sell?"sell-tag":"buy-tag")+'">'+(s.sell?"SELL":"BUY")+"</span>";
+  b.onclick=function(){sel(id);};
+  g.appendChild(b);
+});
+function sel(id){
+  cur=id;
+  document.querySelectorAll(".sb").forEach(function(b){b.classList.remove("active");});
+  document.getElementById("sb_"+id).classList.add("active");
+  var s=S[id];
+  document.getElementById("sI").innerHTML=s.i;
+  document.getElementById("sN").textContent=id+" - "+s.n;
+  document.getElementById("sD").textContent=s.d;
+  var te=document.getElementById("sT"),tg="";
+  tg+=s.sell?'<span class="tg tgs">SELL</span>':'<span class="tg tgb">BUY</span>';
+  if(s.daily) tg+='<span class="tg tgd">DAILY</span>';
+  if(s.thu) tg+='<span class="tg tgt">THURSDAY ONLY</span>';
+  if(!s.daily&&!s.thu) tg+='<span class="tg tgw">CONDITIONAL</span>';
+  te.innerHTML=tg;
+  document.getElementById("cc").className="cc"+(s.sell?" sm":"");
+  renderInputs(id);resetR();
+}
+function atm(x){return Math.round(x/50)*50;}
+function otmC(x,p){return Math.round(x*(1+p)/50)*50;}
+function otmP(x,p){return Math.round(x*(1-p)/50)*50;}
+function fv(id){var e=document.getElementById(id);return e?parseFloat(e.value)||0:0;}
+function sv(id,val){var e=document.getElementById(id);if(e)e.value=val;}
+function frs(n){return "Rs."+Math.abs(n).toLocaleString("en-IN",{maximumFractionDigits:0});}
+function ifd(lbl,id,ph,ro,ht){
+  return '<div class="fd"><label>'+lbl+'</label><input type="number" id="'+id+'" placeholder="'+ph+'"'+(ro?' class="ro" readonly':'')+' oninput="calc()">'+( ht?'<span class="ht">'+ht+'</span>':'')+' </div>';
+}
+function isel(lbl,id,opts){
+  return '<div class="fd"><label>'+lbl+'</label><select id="'+id+'" onchange="calc()">'+opts+'</select></div>';
+}
+function lotsHtml(){
+  return '<div class="ig3">'+ifd("Number of Lots","f_lots","1",false,"1 lot = "+LS+" units")+ifd("Units (auto)","f_units","",true)+ifd("Lot Size","f_lotsize",LS.toString(),false,"Nifty50 = 75")+'</div>';
+}
+function sec(t){return '<div class="stl">'+t+'</div>';}
+function renderInputs(id){
+  var body=document.getElementById("cb2"),s=S[id],h="";
+  if(id==="S13"){
+    h+=sec("&#128176; Daily Straddle Sell + Stop");
+    h+='<div class="ig">'+ifd("9:30 AM Spot","f_se","24250")+ifd("ATM Strike (auto)","f_atm","",true)+ifd("Call Premium Sold","f_ce","150")+ifd("Put Premium Sold","f_pe","153")+'</div>';
+    h+=sec("&#9888;&#65039; Stop Check at 12:00 PM");
+    h+='<div class="ig">'+ifd("12:00 PM Spot","f_p12","24234",false,"CLOSE of 12PM candle")+ifd("Move from ATM (%)","f_mv","",true,"Trigger: > 0.6%")+'</div>';
+    h+='<div class="sck neutral" id="stk">&#9203; Enter 12 PM spot to check stop</div>';
+    h+=sec("&#128205; Exit Premiums");
+    h+='<div class="ig">'+ifd("Call at Exit","f_cx","60")+ifd("Put at Exit","f_px","55")+'</div>';
+  } else if(id==="S3"){
+    h+=sec("&#128142; Expiry Straddle Sell (Thursday Only)");
+    h+='<div class="ig">'+ifd("9:20 AM Spot","f_se","24200")+ifd("ATM Strike (auto)","f_atm","",true)+ifd("Call Premium Sold","f_ce","180")+ifd("Put Premium Sold","f_pe","175")+ifd("Call at Exit (2:30 PM)","f_cx","40")+ifd("Put at Exit (2:30 PM)","f_px","35")+'</div>';
+  } else if(id==="S14"){
+    h+=sec("&#129413; Iron Condor - 10 AM Entry");
+    h+='<div class="ig">'+ifd("10:00 AM Spot","f_se","24250")+'</div>';
+    h+='<div class="sdp" id="sdsp"></div>';
+    h+=sec("Premiums at Entry (Enter actual market premiums)");
+    h+='<div class="ig3">'+ifd("Sell Call (0.5% OTM)","f_sce","120")+ifd("Buy Call Hedge (1.5%)","f_lce","40")+ifd("Net Call Credit","f_nc","",true)+ifd("Sell Put (0.5% OTM)","f_spe","115")+ifd("Buy Put Hedge (1.5%)","f_lpe","38")+ifd("Net Put Credit","f_np","",true)+'</div>';
+    h+=sec("Premiums at Exit (2:30 PM)");
+    h+='<div class="ig">'+ifd("Sell Call Exit","f_scx","30")+ifd("Buy Call Hedge Exit","f_lcx","8")+ifd("Sell Put Exit","f_spx","28")+ifd("Buy Put Hedge Exit","f_lpx","7")+'</div>';
+  } else if(id==="S15"){
+    h+=sec("&#127919; Mid-Week Strangle Sell (Tue/Wed/Thu)");
+    h+='<div class="ig">'+ifd("9:30 AM Spot","f_se","24250")+isel("Day of Week","f_dow","<option value='2'>Tuesday</option><option value='3'>Wednesday</option><option value='4'>Thursday</option><option value='0'>Monday (No Trade)</option><option value='5'>Friday (No Trade)</option>")+'</div>';
+    h+='<div class="sdp" id="sdsp"></div>';
+    h+='<div class="ig">'+ifd("1% OTM Call Sold","f_ce","80")+ifd("1% OTM Put Sold","f_pe","75")+'</div>';
+    h+=sec("&#9888;&#65039; Stop Check at 1:00 PM");
+    h+='<div class="ig">'+ifd("1:00 PM Spot","f_p13","24234",false,"Trigger: > 1.2% move")+ifd("Move (%)","f_mv","",true)+'</div>';
+    h+='<div class="sck neutral" id="stk">&#9203; Enter 1 PM spot to check stop</div>';
+    h+=sec("&#128205; Exit Premiums");
+    h+='<div class="ig">'+ifd("Call at Exit","f_cx","25")+ifd("Put at Exit","f_px","20")+'</div>';
+  } else if(id==="S6"){
+    h+=sec("&#9889; High-VIX Straddle Buy (VIX > 20)");
+    h+='<div class="ig">'+ifd("VIX Value","f_vx","22",false,"Need VIX > 20")+ifd("Call Premium Bought","f_ce","200")+ifd("Put Premium Bought","f_pe","195")+ifd("Call at Exit (1 PM)","f_cx","150")+ifd("Put at Exit (1 PM)","f_px","100")+'</div>';
+    h+='<div class="sgck neutral" id="sig">&#9203; Enter VIX to check signal</div>';
+  } else {
+    // Generic BUY strategies
+    var inputs="";
+    if(id==="S1"){
+      h+=sec("&#128293; ORB-15 Entry Range (9:15-9:25 AM)");
+      inputs='<div class="ig">'+ifd("9:15 AM High","f_rh","24300")+ifd("9:15 AM Low","f_rl","24200")+ifd("9:20 AM Close","f_p920","24280")+ifd("9:25 AM Close","f_p925","24290")+ifd("9:30 AM Spot (Entry)","f_p930","24310")+ifd("Entry Premium","f_pe2","150")+'</div>';
+      h+=inputs;
+      h+='<div class="sgck neutral" id="sig">&#9203; Fill range to check breakout</div>';
+      h+=sec("Exit at 1:00 PM");
+      h+='<div class="ig">'+ifd("Exit Premium","f_px2","80")+'</div>';
+    } else if(id==="S2"){
+      h+=sec("&#128225; VIX + Gap Signal");
+      h+='<div class="ig">'+ifd("Previous Day Close","f_pc","24200")+ifd("Today Open","f_op","24350")+ifd("VIX Value","f_vx","14.5")+ifd("Entry Premium (9:20 AM)","f_pe2","120")+'</div>';
+      h+='<div class="sgck neutral" id="sig">&#9203; Fill VIX + gap to check signal</div>';
+      h+=sec("Exit at 12:30 PM");
+      h+='<div class="ig">'+ifd("Exit Premium","f_px2","60")+'</div>';
+    } else if(id==="S4"){
+      h+=sec("&#8617;&#65039; Monday Gap Reversal");
+      h+='<div class="ig">'+ifd("Friday Close","f_pc","24200")+ifd("Monday Open","f_op","24350")+ifd("Entry Premium (9:20 AM)","f_pe2","100")+ifd("Exit Premium (11:00 AM)","f_px2","70")+'</div>';
+      h+='<div class="sgck neutral" id="sig">&#9203; Need gap > 0.5% on Monday</div>';
+    } else if(id==="S5"){
+      h+=sec("&#128200; 3-Day Momentum");
+      h+='<div class="ig3">'+ifd("Day -3 Close","f_d3","24000")+ifd("Day -2 Close","f_d2","24100")+ifd("Day -1 Close","f_d1","24200")+'</div>';
+      h+='<div class="sgck neutral" id="sig">&#9203; Fill 3-day close to check momentum</div>';
+      h+=sec("Entry + Exit");
+      h+='<div class="ig">'+ifd("Entry Premium (9:20 AM)","f_pe2","130")+ifd("Exit Premium (12:00 PM)","f_px2","60")+'</div>';
+    } else if(id==="S7"){
+      h+=sec("&#128269; First Candle Direction (9:15 AM)");
+      h+='<div class="ig">'+ifd("9:15 AM Candle Open","f_op","24200")+ifd("9:15 AM Candle Close","f_cl","24250")+ifd("Entry Premium (9:20 AM)","f_pe2","120")+ifd("Exit Premium (11:00 AM)","f_px2","70")+'</div>';
+      h+='<div class="sgck neutral" id="sig">&#9203; Fill candle O/C to detect direction</div>';
+    } else if(id==="S8"){
+      h+=sec("&#128202; 10AM Trend Follow");
+      h+='<div class="ig">'+ifd("Day Open","f_op","24200")+ifd("10:00 AM Spot","f_p10","24260",false,"Need > 0.2% move")+ifd("Entry Premium (10:00 AM)","f_pe2","110")+ifd("Exit Premium (12:30 PM)","f_px2","55")+'</div>';
+      h+='<div class="sgck neutral" id="sig">&#9203; Fill open + 10AM spot to check signal</div>';
+    } else if(id==="S9"){
+      h+=sec("&#128260; 11:30AM Reversal Buy");
+      h+='<div class="ig">'+ifd("Day Open","f_op","24200")+ifd("11:30 AM Spot","f_p11","24325",false,"Need > 0.5% move")+ifd("Entry Premium","f_pe2","90")+ifd("Exit Premium (1:30 PM)","f_px2","50")+'</div>';
+      h+='<div class="sgck neutral" id="sig">&#9203; Fill open + 11:30 AM spot</div>';
+    } else if(id==="S10"){
+      h+=sec("&#9200; Power Hour Follow");
+      h+='<div class="ig">'+ifd("Day Open","f_op","24200")+ifd("2:15 PM Spot","f_p14","24260")+ifd("Entry Premium (2:15 PM)","f_pe2","80")+ifd("Exit Premium (3:20 PM)","f_px2","40")+'</div>';
+      h+='<div class="sgck neutral" id="sig">&#9203; Fill data to detect trend direction</div>';
+    } else if(id==="S11"){
+      h+=sec("&#128207; 1.5hr Range Breakout");
+      h+='<div class="ig">'+ifd("Range High (9:15-10:45 AM)","f_rh","24320")+ifd("Range Low (9:15-10:45 AM)","f_rl","24180")+ifd("10:45 AM Spot","f_p10","24325")+ifd("Entry Premium","f_pe2","100")+ifd("Exit Premium (1:15 PM)","f_px2","50")+'</div>';
+      h+='<div class="sgck neutral" id="sig">&#9203; Fill range to detect breakout</div>';
+    } else if(id==="S12"){
+      h+=sec("&#128640; Morning Surge Scalp");
+      h+='<div class="ig">'+ifd("9:15 AM Spot","f_op","24200")+ifd("Range High (9:15-9:45)","f_rh","24290")+ifd("Range Low (9:15-9:45)","f_rl","24180")+ifd("9:45 AM Spot","f_p9","24270")+ifd("Entry Premium (9:45 AM)","f_pe2","130")+ifd("Exit Premium (11:30 AM)","f_px2","60")+'</div>';
+      h+='<div class="sgck neutral" id="sig">&#9203; Fill range to check surge signal (> 0.4%)</div>';
+    }
+  }
+  h+=lotsHtml();
+  h+='<button class="cbtn'+(s.sell?" sell":"")+'" onclick="calc()">&#9889; Calculate P&amp;L</button>';
+  body.innerHTML=h;
+  calc();
+}
+function calc(){
+  if(!cur) return;
+  var lots=fv("f_lots")||1,ls2=fv("f_lotsize")||LS;
+  sv("f_units",lots*ls2);
+  var gross=0,slip=0,txn=0,net=0,vi="&#127919;",vc="wait",vt="Awaiting",vs="Fill parameters";
+  var id=cur;
+  if(id==="S13"){
+    var se=fv("f_se"),K=atm(se);
+    sv("f_atm",K);
+    var ce=fv("f_ce"),pe=fv("f_pe"),p12=fv("f_p12"),cx=fv("f_cx"),px=fv("f_px");
+    var mv=0,stp=false;
+    if(se&&p12&&K){
+      mv=Math.abs(p12-K)/K*100;sv("f_mv",mv.toFixed(3));stp=mv>0.6;
+      var sc=document.getElementById("stk");
+      if(sc){
+        if(stp){sc.className="sck exit";sc.innerHTML='<span class="ico">&#128680;</span><div><div>EXIT at 12 PM &mdash; Stop Triggered!</div><div class="det">Move: '+mv.toFixed(3)+'% &gt; 0.6% threshold. Close both legs NOW.</div></div>';}
+        else{sc.className="sck hold";sc.innerHTML='<span class="ico">&#9989;</span><div><div>HOLD till 2:30 PM &mdash; No Stop</div><div class="det">Move: '+mv.toFixed(3)+'% &mdash; well below 0.6% threshold. Let theta work!</div></div>';}
+      }
+    }
+    var ti=ce+pe,to=cx+px;
+    gross=(ti-to)*lots*ls2;slip=(ti+to)*SLP*lots*ls2;txn=TX*2;net=gross-slip-txn;
+    if(stp){vi="&#128680;";vc="exit";vt="EXIT AT 12 PM";vs="Stop triggered &mdash; close both legs immediately";}
+    else if(net>0){vi="&#128176;";vc="hold";vt="HOLD &mdash; PROFITABLE";vs="Theta working &mdash; hold to 2:30 PM";}
+    else if(net<0){vi="&#9888;&#65039;";vc="exit";vt="REVIEW TRADE";vs="Current exit shows a loss";}
+  } else if(id==="S3"){
+    var se=fv("f_se"),K=atm(se);sv("f_atm",K);
+    var ce=fv("f_ce"),pe=fv("f_pe"),cx=fv("f_cx"),px=fv("f_px");
+    var ti=ce+pe,to=cx+px;
+    gross=(ti-to)*lots*ls2;slip=(ti+to)*SLP*lots*ls2;txn=TX*2;net=gross-slip-txn;
+    if(net>0){vi="&#128142;";vc="hold";vt="PROFITABLE";vs="Expiry straddle collected premium";}
+    else{vi="&#128202;";vc="exit";vt="LOSS";vs="Nifty moved too far from ATM on Thursday";}
+  } else if(id==="S14"){
+    var se=fv("f_se");
+    if(se){
+      var sd=document.getElementById("sdsp");
+      if(sd){
+        var sc=otmC(se,0.005),lc=otmC(se,0.015),sp=otmP(se,0.005),lp=otmP(se,0.015);
+        sd.innerHTML='<div class="sr"><span class="sk">Spot 10 AM</span><span class="sv atm">'+se+'</span></div><div class="sr"><span class="sk">SELL Call (0.5% OTM)</span><span class="sv sell">'+sc+'</span></div><div class="sr"><span class="sk">BUY Call (1.5% OTM)</span><span class="sv buy">'+lc+'</span></div><div class="sr"><span class="sk">SELL Put (0.5% OTM)</span><span class="sv sell">'+sp+'</span></div><div class="sr"><span class="sk">BUY Put (1.5% OTM)</span><span class="sv buy">'+lp+'</span></div>';
+      }
+    }
+    var sce=fv("f_sce"),lce=fv("f_lce"),spe=fv("f_spe"),lpe=fv("f_lpe");
+    var scx=fv("f_scx"),lcx=fv("f_lcx"),spx=fv("f_spx"),lpx=fv("f_lpx");
+    var nc=sce-lce,np=spe-lpe;
+    sv("f_nc",nc.toFixed(1));sv("f_np",np.toFixed(1));
+    var ncr=nc+np,ndb=(scx-lcx)+(spx-lpx);
+    gross=(ncr-ndb)*lots*ls2;slip=(ncr+ndb)*SLP*lots*ls2;txn=TX*4;net=gross-slip-txn;
+    if(net>0){vi="&#129413;";vc="hold";vt="IRON CONDOR PROFIT";vs="Within the defined spread range";}
+    else{vi="&#128202;";vc="exit";vt="CONDOR LOSS";vs="Market breached a spread wing";}
+  } else if(id==="S15"){
+    var se=fv("f_se");
+    var dowEl=document.getElementById("f_dow");
+    var dow=dowEl?parseInt(dowEl.value):2;
+    var canTrade=[2,3,4].includes(dow);
+    if(se){
+      var sd=document.getElementById("sdsp");
+      if(sd){
+        var kc=otmC(se,0.01),kp=otmP(se,0.01);
+        sd.innerHTML='<div class="sr"><span class="sk">Spot</span><span class="sv atm">'+se+'</span></div><div class="sr"><span class="sk">SELL Call (1% OTM)</span><span class="sv sell">'+kc+'</span></div><div class="sr"><span class="sk">SELL Put (1% OTM)</span><span class="sv sell">'+kp+'</span></div>';
+      }
+    }
+    var p13=fv("f_p13"),mv=0,stp=false;
+    if(se&&p13){
+      mv=Math.abs(p13-se)/se*100;sv("f_mv",mv.toFixed(3));stp=mv>1.2;
+      var sc=document.getElementById("stk");
+      if(sc){
+        if(!canTrade){sc.className="sck neutral";sc.innerHTML='<span class="ico">&#128683;</span><div>No Trade Today &mdash; S15 only Tue/Wed/Thu</div>';}
+        else if(stp){sc.className="sck exit";sc.innerHTML='<span class="ico">&#128680;</span><div><div>EXIT at 1 PM &mdash; Stop Triggered!</div><div class="det">Move: '+mv.toFixed(3)+'% &gt; 1.2% threshold.</div></div>';}
+        else{sc.className="sck hold";sc.innerHTML='<span class="ico">&#9989;</span><div><div>HOLD till 2:30 PM</div><div class="det">Move: '+mv.toFixed(3)+'% &mdash; below 1.2% threshold. Hold!</div></div>';}
+      }
+    }
+    if(!canTrade){net=0;vi="&#128683;";vc="wait";vt="NO TRADE TODAY";vs="S15 only trades on Tue/Wed/Thu";}
+    else{
+      var ce=fv("f_ce"),pe=fv("f_pe"),cx=fv("f_cx"),px=fv("f_px");
+      var ti=ce+pe,to=cx+px;
+      gross=(ti-to)*lots*ls2;slip=(ti+to)*SLP*lots*ls2;txn=TX*2;net=gross-slip-txn;
+      if(stp){vi="&#128680;";vc="exit";vt="EXIT AT 1 PM";vs="Stop triggered &mdash; close strangle";}
+      else if(net>0){vi="&#127919;";vc="hold";vt="STRANGLE PROFIT";vs="OTM options decaying beautifully";}
+      else{vi="&#128202;";vc="exit";vt="STRANGLE LOSS";vs="Market moved beyond your strikes";}
+    }
+  } else if(id==="S6"){
+    var ce=fv("f_ce"),pe=fv("f_pe"),cx=fv("f_cx"),px=fv("f_px");
+    var vx=fv("f_vx");
+    var sc=document.getElementById("sig");
+    if(vx&&sc){if(vx>20){sc.className="sgck valid";sc.textContent="Signal Valid \u2014 VIX: "+vx+" > 20";}else{sc.className="sgck invalid";sc.textContent="No Signal \u2014 VIX: "+vx+" < 20 (need VIX > 20)";}}
+    gross=((cx+px)-(ce+pe))*lots*ls2;slip=(ce+pe+cx+px)*SLP*lots*ls2;txn=TX*2;net=gross-slip-txn;
+    if(net>0){vi="&#9989;";vc="hold";vt="PROFITABLE";vs="Straddle gained on big move";}
+    else{vi="&#128202;";vc="exit";vt="LOSS";vs="Market didn't move enough";}
+  } else {
+    var pe2=fv("f_pe2"),px2=fv("f_px2");
+    var sc=document.getElementById("sig");
+    if(id==="S2"){var pc=fv("f_pc"),op=fv("f_op"),vx=fv("f_vx");if(pc&&op&&vx&&sc){var gp=(op-pc)/pc*100;if(Math.abs(gp)>0.3){sc.className="sgck valid";sc.textContent="Signal Valid \u2014 Gap: "+gp.toFixed(2)+"% | VIX: "+vx+" ("+(vx>18?"High":"Low")+" VIX)";}else{sc.className="sgck invalid";sc.textContent="No Signal \u2014 Gap "+gp.toFixed(2)+"% < 0.3% threshold";}}}
+    else if(id==="S4"){var pc=fv("f_pc"),op=fv("f_op");if(pc&&op&&sc){var gp=Math.abs(op-pc)/pc*100;if(gp>0.5){sc.className="sgck valid";sc.textContent="Signal Valid \u2014 Monday Gap: "+gp.toFixed(2)+"% > 0.5%";}else{sc.className="sgck invalid";sc.textContent="No Signal \u2014 Gap "+gp.toFixed(2)+"% < 0.5%";}}}
+    else if(id==="S5"){var d3=fv("f_d3"),d2=fv("f_d2"),d1=fv("f_d1");if(d3&&d2&&d1&&sc){var up=(d2>d3)&&(d1>d2),dn=(d2<d3)&&(d1<d2);if(up){sc.className="sgck valid";sc.textContent="3-Day UP Trend \u2014 Buy CALL";}else if(dn){sc.className="sgck valid";sc.textContent="3-Day DOWN Trend \u2014 Buy PUT";}else{sc.className="sgck invalid";sc.textContent="No 3-Day Consecutive Trend \u2014 No Trade";}}}
+    else if(id==="S7"){var op=fv("f_op"),cl=fv("f_cl");if(op&&cl&&sc){sc.className="sgck valid";sc.textContent=(cl>=op?"Bullish (Buy CALL)":"Bearish (Buy PUT)")+" \u2014 "+op+" \u2192 "+cl;}}
+    else if(id==="S8"){var op=fv("f_op"),p10=fv("f_p10");if(op&&p10&&sc){var mv=(p10-op)/op*100;if(Math.abs(mv)>0.2){sc.className="sgck valid";sc.textContent="Signal: "+mv.toFixed(2)+"% move \u2014 "+(mv>0?"Buy CALL":"Buy PUT");}else{sc.className="sgck invalid";sc.textContent="No Signal \u2014 Move "+mv.toFixed(2)+"% < 0.2%";}}}
+    else if(id==="S9"){var op=fv("f_op"),p11=fv("f_p11");if(op&&p11&&sc){var mv=(p11-op)/op*100;if(Math.abs(mv)>0.5){sc.className="sgck valid";sc.textContent="Reversal: "+mv.toFixed(2)+"% \u2014 "+(mv>0?"Buy PUT (fade up)":"Buy CALL (fade down)");}else{sc.className="sgck invalid";sc.textContent="No Signal \u2014 Move "+mv.toFixed(2)+"% < 0.5%";}}}
+    else if(id==="S10"){var op=fv("f_op"),p14=fv("f_p14");if(op&&p14&&sc){var mv=(p14-op)/op*100;sc.className="sgck valid";sc.textContent="Power Hour: "+(mv>0?"UP":"DOWN")+" trend ("+mv.toFixed(2)+"%) \u2014 Buy "+(mv>0?"CALL":"PUT");}}
+    else if(id==="S11"){var rh=fv("f_rh"),rl=fv("f_rl"),p10=fv("f_p10");if(rh&&rl&&p10&&sc){var rng=rh-rl;if(p10>rh-0.1*rng){sc.className="sgck valid";sc.textContent="Upside Breakout \u2014 Buy CALL (range: "+rl+" - "+rh+")";}else if(p10<rl+0.1*rng){sc.className="sgck valid";sc.textContent="Downside Breakout \u2014 Buy PUT";}else{sc.className="sgck invalid";sc.textContent="Inside Range \u2014 No Trade";}}}
+    else if(id==="S12"){var op=fv("f_op"),rh=fv("f_rh"),rl=fv("f_rl");if(op&&rh&&rl&&sc){var rng=(rh-rl)/op*100;if(rng>0.4){sc.className="sgck valid";sc.textContent="Surge Signal \u2014 Range: "+rng.toFixed(2)+"% > 0.4%";}else{sc.className="sgck invalid";sc.textContent="No Signal \u2014 Range "+rng.toFixed(2)+"% < 0.4%";}}}
+    else if(id==="S1"){var rh=fv("f_rh"),rl=fv("f_rl"),p920=fv("f_p920"),p925=fv("f_p925"),p930=fv("f_p930");if(rh&&rl&&p930&&sc){var mrh=Math.max(rh,p920,p925),mrl=Math.min(rl,p920,p925);if(p930>mrh){sc.className="sgck valid";sc.textContent="Bullish Breakout: "+p930+" > High "+mrh+" \u2014 Buy CALL";}else if(p930<mrl){sc.className="sgck valid";sc.textContent="Bearish Breakdown: "+p930+" < Low "+mrl+" \u2014 Buy PUT";}else{sc.className="sgck invalid";sc.textContent="No Breakout: Price inside range "+mrl+" - "+mrh;}}}
+    gross=(px2-pe2)*lots*ls2;slip=(pe2+px2)*SLP*lots*ls2;txn=TX;net=gross-slip-txn;
+    if(net>0){vi="&#9989;";vc="hold";vt="PROFITABLE TRADE";vs="Premium gained after all costs";}
+    else if(net<0){vi="&#128202;";vc="exit";vt="LOSS ON TRADE";vs="Option moved against your position";}
+  }
+  upd(net,gross,slip,txn,lots,ls2,vi,vc,vt,vs);
+}
+function upd(net,gross,slip,txn,lots,ls2,vi,vc,vt,vs){
+  var pe=document.getElementById("rP");
+  if(gross||net){pe.textContent=(net>=0?"+":"-")+frs(net);pe.className="pv "+(net>0?"profit":net<0?"loss":"neutral");}
+  else{pe.textContent="\u2014";pe.className="pv neutral";}
+  document.getElementById("rPS").textContent=lots+" lot"+(lots>1?"s":"")+" x "+ls2+" units";
+  document.getElementById("rL").textContent=lots||"\u2014";
+  document.getElementById("rU").textContent=lots?lots*ls2:"\u2014";
+  var rg=document.getElementById("rG");
+  rg.textContent=gross?(gross>=0?"+":"-")+frs(gross):"\u2014";
+  rg.className="mv "+(gross>0?"up":gross<0?"dn":"ac");
+  document.getElementById("rT").textContent=txn?"-Rs."+txn:"\u2014";
+  document.getElementById("bG").textContent=gross?(gross>=0?"+":"-")+frs(gross):"\u2014";
+  document.getElementById("bS").textContent=slip?"-"+frs(slip):"\u2014";
+  document.getElementById("bT").textContent=txn?"-Rs."+txn:"\u2014";
+  var bn=document.getElementById("bN");
+  bn.textContent=net?(net>=0?"+":"-")+frs(net):"\u2014";
+  bn.style.color=net>0?"var(--grn)":net<0?"var(--red)":"var(--mut)";
+  var rv=document.getElementById("rV");
+  if(vt){rv.className="vd "+vc;rv.innerHTML='<div class="vi">'+vi+'</div><div class="vt">'+vt+'</div><div class="vs">'+vs+'</div>';}
+}
+function resetR(){
+  ["rP","rL","rU","rG","rT","bG","bS","bT","bN"].forEach(function(id){
+    var e=document.getElementById(id);
+    if(e){e.textContent="\u2014";e.style.color="";}
+  });
+  document.getElementById("rP").className="pv neutral";
+  document.getElementById("rPS").textContent="Enter parameters to calculate";
+  var rv=document.getElementById("rV");
+  rv.className="vd wait";
+  rv.innerHTML='<div class="vi">&#127919;</div><div class="vt" style="color:var(--mut)">Awaiting Input</div><div class="vs">Fill parameters to get recommendation</div>';
+}
+sel("S13");
+</script>
+</body>
+</html>
