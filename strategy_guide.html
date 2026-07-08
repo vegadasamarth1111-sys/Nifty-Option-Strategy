@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nifty 50 Options — Complete Strategy Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:    #060b17;
+  --bg2:   #0d1526;
+  --bg3:   #111e30;
+  --card:  #152035;
+  --bdr:   #1e3050;
+  --acc:   #00d4ff;
+  --acc2:  #7c3aed;
+  --grn:   #10b981;
+  --red:   #ef4444;
+  --ylw:   #f59e0b;
+  --org:   #ff922b;
+  --txt:   #dde4f0;
+  --mut:   #64748b;
+  --sell:  #10b981;
+  --buy:   #00d4ff;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--txt); line-height:1.6; }
+
+/* ── TOP NAV ── */
+.topnav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:rgba(6,11,23,0.92); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--bdr);
+  padding:0 40px;
+  display:flex; align-items:center; gap:0; height:56px;
+  overflow-x:auto;
+}
+.nav-brand { font-size:1rem; font-weight:900; background:linear-gradient(135deg,#00d4ff,#7c3aed);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  white-space:nowrap; margin-right:24px; flex-shrink:0; }
+.nav-link { padding:6px 14px; font-size:0.75rem; font-weight:600; border-radius:6px;
+  color:var(--mut); text-decoration:none; white-space:nowrap; transition:all .2s; }
+.nav-link:hover { color:var(--txt); background:var(--bg3); }
+.nav-link.sell { color:var(--grn); }
+.nav-link.buy  { color:var(--acc); }
+
+/* ── HERO ── */
+.hero {
+  padding:120px 60px 60px;
+  background:linear-gradient(180deg,#060b17,#0d1526);
+  text-align:center; position:relative; overflow:hidden;
+}
+.hero::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(0,212,255,0.08),transparent);
+}
+.hero-label { font-size:0.72rem; font-weight:700; letter-spacing:.15em;
+  text-transform:uppercase; color:var(--acc); margin-bottom:12px; }
+.hero h1 { font-size:3rem; font-weight:900; letter-spacing:-0.03em; margin-bottom:16px;
+  background:linear-gradient(135deg,#fff,#a0c4ff);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.hero p { font-size:1.1rem; color:var(--mut); max-width:640px; margin:0 auto 40px; }
+.hero-stats { display:flex; justify-content:center; gap:24px; flex-wrap:wrap; }
+.hs { background:var(--bg3); border:1px solid var(--bdr); border-radius:12px;
+  padding:16px 28px; text-align:center; }
+.hs .n { font-size:2rem; font-weight:900; }
+.hs .l { font-size:0.72rem; color:var(--mut); margin-top:4px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
+
+/* ── TOC ── */
+.toc { max-width:1100px; margin:40px auto; padding:0 40px; }
+.toc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; }
+.toc-item { background:var(--bg2); border:1px solid var(--bdr); border-radius:10px;
+  padding:14px 18px; text-decoration:none; display:flex; align-items:center; gap:12px;
+  transition:all .2s; }
+.toc-item:hover { border-color:var(--acc); background:var(--card); transform:translateY(-2px); }
+.toc-badge { font-size:0.75rem; font-weight:800; padding:3px 8px; border-radius:5px;
+  flex-shrink:0; font-family:'JetBrains Mono',monospace; }
+.toc-badge.sell { background:rgba(16,185,129,0.15); color:var(--grn); border:1px solid rgba(16,185,129,0.3); }
+.toc-badge.buy  { background:rgba(0,212,255,0.1);  color:var(--acc); border:1px solid rgba(0,212,255,0.25); }
+.toc-name { font-weight:600; font-size:0.85rem; color:var(--txt); }
+.toc-type { font-size:0.68rem; color:var(--mut); margin-top:1px; }
+
+/* ── SECTION DIVIDER ── */
+.divider { max-width:1100px; margin:60px auto 0; padding:0 40px; }
+.divider-inner { border-top:1px solid var(--bdr); padding-top:20px;
+  display:flex; align-items:center; gap:14px; }
+.div-label { font-size:0.7rem; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; padding:4px 12px; border-radius:5px; flex-shrink:0; }
+.div-label.sell { background:rgba(16,185,129,0.12); color:var(--grn); border:1px solid rgba(16,185,129,0.25); }
+.div-label.buy  { background:rgba(0,212,255,0.08);  color:var(--acc); border:1px solid rgba(0,212,255,0.2); }
+.div-title { font-size:1.4rem; font-weight:800; color:var(--txt); }
+
+/* ── STRATEGY CARD ── */
+.strategies { max-width:1100px; margin:0 auto; padding:0 40px 80px; }
+.s-card {
+  background:var(--card); border:1px solid var(--bdr);
+  border-radius:16px; margin-bottom:32px; overflow:hidden;
+  position:relative;
+}
+.s-card.sell::before { content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,var(--grn),#34d399); }
+.s-card.buy::before  { content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,var(--acc),var(--acc2)); }
+
+.s-header { padding:24px 28px 0; display:flex; align-items:flex-start; gap:18px; }
+.s-num { font-family:'JetBrains Mono',monospace; font-size:0.75rem; font-weight:700;
+  padding:5px 10px; border-radius:6px; flex-shrink:0; margin-top:3px; }
+.s-num.sell { background:rgba(16,185,129,0.12); color:var(--grn); border:1px solid rgba(16,185,129,0.3); }
+.s-num.buy  { background:rgba(0,212,255,0.08);  color:var(--acc); border:1px solid rgba(0,212,255,0.25); }
+.s-title-block {}
+.s-name { font-size:1.3rem; font-weight:800; color:var(--txt); }
+.s-subtitle { font-size:0.82rem; color:var(--mut); margin-top:3px; }
+.s-tags { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+.tag { font-size:0.65rem; font-weight:700; padding:3px 8px; border-radius:4px;
+  text-transform:uppercase; letter-spacing:.05em; }
+.tag.daily { background:rgba(0,212,255,0.1);  color:var(--acc); border:1px solid rgba(0,212,255,0.2); }
+.tag.cond  { background:rgba(245,158,11,0.1); color:var(--ylw); border:1px solid rgba(245,158,11,0.2); }
+.tag.sell  { background:rgba(16,185,129,0.1); color:var(--grn); border:1px solid rgba(16,185,129,0.25); }
+.tag.buy   { background:rgba(124,58,237,0.1); color:#a78bfa;   border:1px solid rgba(124,58,237,0.25); }
+.tag.risk-low  { background:rgba(16,185,129,0.08); color:var(--grn); border:1px solid rgba(16,185,129,0.2); }
+.tag.risk-med  { background:rgba(245,158,11,0.08); color:var(--ylw); border:1px solid rgba(245,158,11,0.2); }
+.tag.risk-high { background:rgba(239,68,68,0.08);  color:var(--red); border:1px solid rgba(239,68,68,0.2); }
+
+.s-body { padding:24px 28px; display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.s-section h4 { font-size:0.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--mut); margin-bottom:10px; }
+.logic-box { background:var(--bg2); border:1px solid var(--bdr); border-radius:10px; padding:16px 18px; }
+.logic-row { display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; font-size:0.85rem; }
+.logic-row:last-child { margin-bottom:0; }
+.logic-icon { font-size:1rem; flex-shrink:0; margin-top:1px; }
+.logic-lbl { font-size:0.68rem; font-weight:700; color:var(--mut); text-transform:uppercase;
+  letter-spacing:.05em; min-width:50px; margin-top:2px; }
+.logic-val { color:var(--txt); line-height:1.5; }
+.logic-val code { font-family:'JetBrains Mono',monospace; font-size:0.8rem;
+  background:var(--bg3); padding:1px 5px; border-radius:3px; color:var(--acc); }
+
+.example-box { background:var(--bg3); border:1px solid var(--bdr); border-radius:10px; padding:16px 18px; }
+.ex-title { font-size:0.72rem; font-weight:700; color:var(--acc); margin-bottom:12px;
+  letter-spacing:.05em; text-transform:uppercase; }
+.ex-row { display:flex; justify-content:space-between; align-items:center;
+  font-size:0.82rem; padding:5px 0; border-bottom:1px solid rgba(30,48,80,0.5); }
+.ex-row:last-child { border-bottom:none; padding-bottom:0; }
+.ex-key { color:var(--mut); }
+.ex-val { font-weight:600; color:var(--txt); font-family:'JetBrains Mono',monospace; font-size:0.78rem; }
+.ex-val.pos { color:var(--grn); }
+.ex-val.neg { color:var(--red); }
+.ex-val.ylw { color:var(--ylw); }
+
+/* Result bar */
+.result-bar { display:grid; grid-template-columns:repeat(4,1fr); gap:0;
+  border-top:1px solid var(--bdr); }
+.rb { padding:16px; text-align:center; border-right:1px solid var(--bdr); }
+.rb:last-child { border-right:none; }
+.rb .rv { font-size:1.15rem; font-weight:800; font-family:'JetBrains Mono',monospace; }
+.rb .rk { font-size:0.65rem; color:var(--mut); margin-top:3px; text-transform:uppercase; letter-spacing:.06em; }
+
+/* Pros/Cons */
+.pc-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.pros { background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.18); border-radius:8px; padding:14px 16px; }
+.cons { background:rgba(239,68,68,0.05);  border:1px solid rgba(239,68,68,0.18);  border-radius:8px; padding:14px 16px; }
+.pros h5 { color:var(--grn); font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+.cons h5 { color:var(--red); font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+.pros ul, .cons ul { list-style:none; }
+.pros li, .cons li { font-size:0.8rem; padding:3px 0; color:var(--txt); }
+.pros li::before { content:'✓ '; color:var(--grn); font-weight:700; }
+.cons li::before { content:'✗ '; color:var(--red); font-weight:700; }
+
+/* Warning box */
+.warn { background:rgba(239,68,68,0.07); border:1px solid rgba(239,68,68,0.25);
+  border-radius:8px; padding:14px 18px; font-size:0.82rem; color:var(--txt);
+  margin-top:16px; display:flex; gap:10px; align-items:flex-start; }
+.warn-icon { font-size:1.2rem; flex-shrink:0; }
+
+/* Capital tier widget */
+.tier-row { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+.tier-pill { border-radius:7px; padding:8px 14px; font-size:0.75rem; font-weight:600; flex:1; min-width:120px; }
+.tier-pill .tl { font-size:0.62rem; color:rgba(255,255,255,0.5); font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+.tier-pill .tv { font-weight:800; font-size:0.95rem; margin-top:2px; }
+
+/* Timeline diagram */
+.timeline { display:flex; align-items:center; gap:0; margin:12px 0; overflow-x:auto; }
+.tl-node { display:flex; flex-direction:column; align-items:center; flex-shrink:0; }
+.tl-dot  { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.tl-line { flex:1; height:2px; min-width:30px; }
+.tl-time { font-size:0.65rem; color:var(--mut); margin-top:4px; white-space:nowrap;
+  font-family:'JetBrains Mono',monospace; font-weight:600; }
+.tl-label { font-size:0.6rem; color:var(--acc); margin-top:2px; white-space:nowrap; }
+.tl-wrap { display:flex; align-items:center; flex-shrink:0; }
+
+/* Key formula */
+.formula { background:var(--bg); border:1px solid var(--bdr); border-radius:8px;
+  padding:14px 18px; font-family:'JetBrains Mono',monospace; font-size:0.8rem;
+  margin:12px 0; overflow-x:auto; line-height:1.8; }
+.formula .cm  { color:var(--mut); }
+.formula .kw  { color:var(--acc2); }
+.formula .vl  { color:var(--grn); }
+.formula .nm  { color:var(--acc); }
+.formula .op  { color:var(--org); }
+
+/* Disclaimer */
+.disclaimer {
+  max-width:1100px; margin:0 auto 60px; padding:0 40px;
+}
+.dis-box {
+  background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.25);
+  border-radius:14px; padding:24px 28px;
+}
+.dis-box h3 { font-size:1rem; color:var(--red); margin-bottom:12px; }
+.dis-box p  { font-size:0.82rem; color:var(--txt); line-height:1.7; margin-bottom:8px; }
+
+@media(max-width:900px) {
+  .hero { padding:90px 20px 40px; }
+  .hero h1 { font-size:2rem; }
+  .strategies,.toc,.divider,.disclaimer { padding-left:20px; padding-right:20px; }
+  .s-body { grid-template-columns:1fr; }
+  .result-bar { grid-template-columns:repeat(2,1fr); }
+  .rb:nth-child(2) { border-right:none; }
+  .topnav { padding:0 20px; }
+  .pc-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <div class="nav-brand">&#9889; Strategy Guide</div>
+  <a class="nav-link sell" href="#sell">SELL Strategies &#8593;</a>
+  <a class="nav-link" href="#s3">S3</a>
+  <a class="nav-link" href="#s13">S13</a>
+  <a class="nav-link" href="#s14">S14</a>
+  <a class="nav-link" href="#s15">S15</a>
+  <a class="nav-link buy"  href="#buy">BUY Strategies &#8593;</a>
+  <a class="nav-link" href="#s1">S1</a>
+  <a class="nav-link" href="#s2">S2</a>
+  <a class="nav-link" href="#s4">S4</a>
+  <a class="nav-link" href="#s5">S5</a>
+  <a class="nav-link" href="#s6">S6</a>
+  <a class="nav-link" href="#s7">S7</a>
+  <a class="nav-link" href="#s8">S8</a>
+  <a class="nav-link" href="#s9">S9</a>
+  <a class="nav-link" href="#s10">S10</a>
+  <a class="nav-link" href="#s11">S11</a>
+  <a class="nav-link" href="#s12">S12</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Complete Strategy Reference</div>
+  <h1>Nifty 50 Options<br>Strategy Playbook</h1>
+  <p>All 15 strategies explained in detail — entry rules, exit rules, worked examples, pros/cons, and 10-year backtest results.</p>
+  <div class="hero-stats">
+    <div class="hs"><div class="n" style="color:#10b981">4</div><div class="l">Sell Strategies</div></div>
+    <div class="hs"><div class="n" style="color:#00d4ff">11</div><div class="l">Buy Strategies</div></div>
+    <div class="hs"><div class="n" style="color:#f59e0b">96.1%</div><div class="l">Best Win Rate</div></div>
+    <div class="hs"><div class="n" style="color:#ff922b">10Y</div><div class="l">Data (2016-26)</div></div>
+    <div class="hs"><div class="n" style="color:#e2e8f0">65</div><div class="l">Lot Size (units)</div></div>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin-bottom:14px;">Quick Navigation</div>
+  <div class="toc-grid">
+    <a class="toc-item" href="#s3"><span class="toc-badge sell">S3</span><div><div class="toc-name">Expiry Straddle Sell</div><div class="toc-type">SELL · Thursday only · 9:20AM–2:30PM</div></div></a>
+    <a class="toc-item" href="#s13"><span class="toc-badge sell">S13</span><div><div class="toc-name">Daily Straddle Sell + Stop</div><div class="toc-type">SELL · Every day · 9:30AM–2:30PM</div></div></a>
+    <a class="toc-item" href="#s14"><span class="toc-badge sell">S14</span><div><div class="toc-name">Iron Condor Sell Daily</div><div class="toc-type">SELL · Every day · 10AM–2:30PM</div></div></a>
+    <a class="toc-item" href="#s15"><span class="toc-badge sell">S15</span><div><div class="toc-name">Mid-Week Strangle Sell</div><div class="toc-type">SELL · Tue/Wed/Thu · 9:30AM–2:30PM</div></div></a>
+    <a class="toc-item" href="#s1"><span class="toc-badge buy">S1</span><div><div class="toc-name">ORB-15 Breakout</div><div class="toc-type">BUY · Daily (conditional) · 9:30AM–1PM</div></div></a>
+    <a class="toc-item" href="#s2"><span class="toc-badge buy">S2</span><div><div class="toc-name">VIX + Gap Signal</div><div class="toc-type">BUY · Daily (conditional) · 9:20AM–12:30PM</div></div></a>
+    <a class="toc-item" href="#s4"><span class="toc-badge buy">S4</span><div><div class="toc-name">Monday Gap Reversal</div><div class="toc-type">BUY · Mondays only · 9:20AM–11AM</div></div></a>
+    <a class="toc-item" href="#s5"><span class="toc-badge buy">S5</span><div><div class="toc-name">3-Day Momentum Buy</div><div class="toc-type">BUY · Conditional · 9:20AM–12PM</div></div></a>
+    <a class="toc-item" href="#s6"><span class="toc-badge buy">S6</span><div><div class="toc-name">High-VIX Straddle Buy</div><div class="toc-type">BUY · VIX&gt;20 days · 9:20AM–1PM</div></div></a>
+    <a class="toc-item" href="#s7"><span class="toc-badge buy">S7</span><div><div class="toc-name">First Candle Direction</div><div class="toc-type">BUY · Every day · 9:20AM–11AM</div></div></a>
+    <a class="toc-item" href="#s8"><span class="toc-badge buy">S8</span><div><div class="toc-name">10AM Confirmed Trend</div><div class="toc-type">BUY · Daily (conditional) · 10AM–12:30PM</div></div></a>
+    <a class="toc-item" href="#s9"><span class="toc-badge buy">S9</span><div><div class="toc-name">11:30AM Reversal</div><div class="toc-type">BUY · Daily (conditional) · 11:30AM–1:30PM</div></div></a>
+    <a class="toc-item" href="#s10"><span class="toc-badge buy">S10</span><div><div class="toc-name">Power Hour Follow</div><div class="toc-type">BUY · Daily (conditional) · 2:15PM–3:20PM</div></div></a>
+    <a class="toc-item" href="#s11"><span class="toc-badge buy">S11</span><div><div class="toc-name">1.5hr Range Breakout</div><div class="toc-type">BUY · Daily (conditional) · 10:45AM–1:15PM</div></div></a>
+    <a class="toc-item" href="#s12"><span class="toc-badge buy">S12</span><div><div class="toc-name">Morning Surge Scalp</div><div class="toc-type">BUY · Daily (conditional) · 9:45AM–11:30AM</div></div></a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ SELL SECTION ═══════════════════════════ -->
+<div class="divider" id="sell">
+  <div class="divider-inner">
+    <span class="div-label sell">SELL Strategies</span>
+    <div class="div-title">Collect Premium — Be the House</div>
+  </div>
+</div>
+
+<div class="strategies">
+
+<!-- ────────────────── S3 ────────────────── -->
+<div class="s-card sell" id="s3">
+  <div class="s-header">
+    <span class="s-num sell">S3</span>
+    <div class="s-title-block">
+      <div class="s-name">Expiry Straddle Sell</div>
+      <div class="s-subtitle">Sell ATM Call + Put on every Thursday. Collect maximum theta decay.</div>
+      <div class="s-tags">
+        <span class="tag sell">SELL</span>
+        <span class="tag cond">Thursday Only</span>
+        <span class="tag risk-med">Medium Risk</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="s-body">
+    <div class="s-section">
+      <h4>Strategy Logic</h4>
+      <div class="logic-box">
+        <div class="logic-row"><span class="logic-icon">📅</span><span class="logic-lbl">When</span><span class="logic-val">Every <b>Thursday</b> only (weekly expiry day)</span></div>
+        <div class="logic-row"><span class="logic-icon">⏰</span><span class="logic-lbl">Entry</span><span class="logic-val"><code>9:20 AM</code> — Sell ATM Straddle (Call + Put at same ATM strike)</span></div>
+        <div class="logic-row"><span class="logic-icon">💰</span><span class="logic-lbl">Action</span><span class="logic-val">Sell 1 ATM Call + Sell 1 ATM Put. You <b>receive</b> premium upfront.</span></div>
+        <div class="logic-row"><span class="logic-icon">🎯</span><span class="logic-lbl">Strike</span><span class="logic-val">ATM = nearest 50-point strike to Nifty spot price</span></div>
+        <div class="logic-row"><span class="logic-icon">🚪</span><span class="logic-lbl">Exit</span><span class="logic-val"><code>2:30 PM</code> — Buy back both options (close position)</span></div>
+        <div class="logic-row"><span class="logic-icon">🛑</span><span class="logic-lbl">Stop</span><span class="logic-val"><b>None in backtest</b>. In real trading: exit if loss = 2× premium received</span></div>
+      </div>
+      <div style="margin-top:12px">
+        <h4>Entry Time Timeline</h4>
+        <div style="background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;padding:12px 16px;font-size:0.78rem;">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span style="color:var(--ylw);font-family:monospace;font-weight:700">9:15</span>
+            <span style="color:var(--mut)">Market opens</span>
+            <span style="color:var(--mut)">→</span>
+            <span style="color:var(--grn);font-family:monospace;font-weight:700">9:20 ⬤ SELL</span>
+            <span style="color:var(--mut)">→ hold entire day →</span>
+            <span style="color:var(--red);font-family:monospace;font-weight:700">2:30 ⬤ BUY BACK</span>
+            <span style="color:var(--mut)">→</span>
+            <span style="color:var(--ylw);font-family:monospace;font-weight:700">3:30</span>
+            <span style="color:var(--mut)">Expiry</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="s-section">
+      <h4>Worked Example</h4>
+      <div class="example-box">
+        <div class="ex-title">Thursday, Nifty = 22,000</div>
+        <div class="ex-row"><span class="ex-key">ATM Strike</span><span class="ex-val">22,000</span></div>
+        <div class="ex-row"><span class="ex-key">Sell 22000 CE @ 9:20 AM</span><span class="ex-val ylw">₹95/unit (receive)</span></div>
+        <div class="ex-row"><span class="ex-key">Sell 22000 PE @ 9:20 AM</span><span class="ex-val ylw">₹90/unit (receive)</span></div>
+        <div class="ex-row"><span class="ex-key">Total premium received</span><span class="ex-val ylw">₹185 × 65 = ₹12,025</span></div>
+        <div class="ex-row"><span class="ex-key">Nifty closes at 22,050</span><span class="ex-val">(small move)</span></div>
+        <div class="ex-row"><span class="ex-key">Buy back CE @ 2:30 PM</span><span class="ex-val">₹52 (decayed)</span></div>
+        <div class="ex-row"><span class="ex-key">Buy back PE @ 2:30 PM</span><span class="ex-val">₹10 (nearly zero)</span></div>
+        <div class="ex-row"><span class="ex-key">Cost to close</span><span class="ex-val">₹62 × 65 = ₹4,030</span></div>
+        <div class="ex-row"><span class="ex-key">Net P&L (1 lot)</span><span class="ex-val pos">+₹7,995 profit ✓</span></div>
+      </div>
+    </div>
+    <div class="s-section">
+      <h4>Pros & Cons</h4>
+      <div class="pc-grid">
+        <div class="pros">
+          <h5>Pros</h5>
+          <ul>
+            <li>Highest win rate on expiry: 89%</li>
+            <li>Theta decays fastest near expiry</li>
+            <li>Only 1 trade per week (low effort)</li>
+            <li>Both options nearly worthless at 3:30PM</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h5>Cons</h5>
+          <ul>
+            <li>Big move on Thursday = large loss</li>
+            <li>Requires high margin (~₹1-2L/lot)</li>
+            <li>Only 52 trades/year</li>
+            <li>No stop-loss in basic version</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="s-section">
+      <h4>Capital Required (Per Lot)</h4>
+      <div class="tier-row">
+        <div class="tier-pill" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2)">
+          <div class="tl">Small (3 lots)</div><div class="tv" style="color:var(--grn)">₹42.6 Lakhs</div>
+          <div style="font-size:.68rem;color:var(--mut);margin-top:2px">10-Year P&L</div>
+        </div>
+        <div class="tier-pill" style="background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2)">
+          <div class="tl">Medium (10 lots)</div><div class="tv" style="color:var(--acc)">₹1.42 Crore</div>
+          <div style="font-size:.68rem;color:var(--mut);margin-top:2px">10-Year P&L</div>
+        </div>
+        <div class="tier-pill" style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2)">
+          <div class="tl">Large (20 lots)</div><div class="tv" style="color:#a78bfa">₹2.85 Crore</div>
+          <div style="font-size:.68rem;color:var(--mut);margin-top:2px">10-Year P&L</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="result-bar">
+    <div class="rb"><div class="rv" style="color:var(--grn)">89.1%</div><div class="rk">Win Rate</div></div>
+    <div class="rb"><div class="rv" style="color:var(--ylw)">14.00</div><div class="rk">Sharpe Ratio</div></div>
+    <div class="rb"><div class="rv" style="color:var(--grn)">₹1.42 Cr</div><div class="rk">Medium Tier P&L</div></div>
+    <div class="rb"><div class="rv" style="color:var(--acc)">322</div><div class="rk">Trades (10 Yrs)</div></div>
+  </div>
+</div>
+
+<!-- ────────────────── S13 ────────────────── -->
+<div class="s-card sell" id="s13">
+  <div class="s-header">
+    <span class="s-num sell">S13</span>
+    <div class="s-title-block">
+      <div class="s-name">Daily Straddle Sell + Stop-Loss</div>
+      <div class="s-subtitle">Best overall performer. Sell ATM straddle every morning with a smart midday stop.</div>
+      <div class="s-tags">
+        <span class="tag sell">SELL</span>
+        <span class="tag daily">Every Day</span>
+        <span class="tag risk-med">Medium Risk</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="s-body">
+    <div class="s-section">
+      <h4>Strategy Logic</h4>
+      <div class="logic-box">
+        <div class="logic-row"><span class="logic-icon">📅</span><span class="logic-lbl">When</span><span class="logic-val"><b>Every trading day</b> — no filter, fully systematic</span></div>
+        <div class="logic-row"><span class="logic-icon">⏰</span><span class="logic-lbl">Entry</span><span class="logic-val"><code>9:30 AM</code> — Sell ATM Call + Sell ATM Put (straddle)</span></div>
+        <div class="logic-row"><span class="logic-icon">🛑</span><span class="logic-lbl">Stop Rule</span><span class="logic-val">Check Nifty at <code>12:00 PM</code> — if moved <b>&gt;0.6%</b> from ATM strike → exit early</span></div>
+        <div class="logic-row"><span class="logic-icon">🚪</span><span class="logic-lbl">Normal Exit</span><span class="logic-val"><code>2:30 PM</code> — if no stop triggered, close at 2:30 PM</span></div>
+        <div class="logic-row"><span class="logic-icon">💡</span><span class="logic-lbl">Why it works</span><span class="logic-val">~85% of days Nifty stays within 0.6% of the ATM strike at noon. You collect theta decay on most days.</span></div>
+      </div>
+      <div style="margin-top:12px">
+        <div class="formula">
+          <span class="cm">// Stop check at 12:00 PM</span>
+          <br><span class="kw">if</span> abs(Nifty_1200 - ATM_Strike) / ATM_Strike <span class="op">&gt;</span> <span class="vl">0.006</span>:
+          <br>&nbsp;&nbsp;&nbsp;&nbsp;exit_now()  <span class="cm">// take the loss, limit damage</span>
+          <br><span class="kw">else</span>:
+          <br>&nbsp;&nbsp;&nbsp;&nbsp;hold_to_2_30pm()  <span class="cm">// collect full theta decay</span>
+        </div>
+      </div>
+    </div>
+    <div class="s-section">
+      <h4>Two Scenarios</h4>
+      <div class="example-box">
+        <div class="ex-title">Scenario A — Normal Day (No Stop)</div>
+        <div class="ex-row"><span class="ex-key">Nifty at 9:30 AM</span><span class="ex-val">22,000</span></div>
+        <div class="ex-row"><span class="ex-key">Sell Call + Put</span><span class="ex-val ylw">Receive ₹180/unit</span></div>
+        <div class="ex-row"><span class="ex-key">Nifty at 12:00 PM</span><span class="ex-val">22,080 (+0.36%) ✓ No stop</span></div>
+        <div class="ex-row"><span class="ex-key">Nifty at 2:30 PM</span><span class="ex-val">22,050</span></div>
+        <div class="ex-row"><span class="ex-key">Buy back @ 2:30 PM</span><span class="ex-val">₹70/unit</span></div>
+        <div class="ex-row"><span class="ex-key">P&L (1 lot)</span><span class="ex-val pos">+₹7,150 ✓</span></div>
+      </div>
+      <div class="example-box" style="margin-top:10px">
+        <div class="ex-title">Scenario B — Big Move Day (Stop Triggered)</div>
+        <div class="ex-row"><span class="ex-key">Nifty at 9:30 AM</span><span class="ex-val">22,000</span></div>
+        <div class="ex-row"><span class="ex-key">Sell Call + Put</span><span class="ex-val ylw">Receive ₹180/unit</span></div>
+        <div class="ex-row"><span class="ex-key">Nifty at 12:00 PM</span><span class="ex-val">22,200 (+0.9%) ✗ Stop!</span></div>
+        <div class="ex-row"><span class="ex-key">Buy back CE @ 12 PM</span><span class="ex-val neg">₹220 (loss side)</span></div>
+        <div class="ex-row"><span class="ex-key">Buy back PE @ 12 PM</span><span class="ex-val">₹5 (gains side)</span></div>
+        <div class="ex-row"><span class="ex-key">P&L (1 lot)</span><span class="ex-val neg">-₹2,925 (limited loss)</span></div>
+      </div>
+    </div>
+    <div class="s-section">
+      <h4>Pros & Cons</h4>
+      <div class="pc-grid">
+        <div class="pros"><h5>Pros</h5><ul>
+          <li>Highest total P&L: ₹4.29 Crore</li>
+          <li>Trades every day (high frequency)</li>
+          <li>Stop-loss limits catastrophic loss</li>
+          <li>84.6% win rate over 10 years</li>
+          <li>Sharpe ratio of 12.79</li>
+        </ul></div>
+        <div class="cons"><h5>Cons</h5><ul>
+          <li>Stop at 12 PM (need to monitor)</li>
+          <li>High margin required daily</li>
+          <li>Losing 15% of days can feel painful</li>
+          <li>Not suitable for expiry Thursdays alone</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="s-section">
+      <h4>10-Year P&L by Tier</h4>
+      <div class="tier-row">
+        <div class="tier-pill" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2)">
+          <div class="tl">Small (3 lots)</div><div class="tv" style="color:var(--grn)">₹1.28 Crore</div>
+        </div>
+        <div class="tier-pill" style="background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2)">
+          <div class="tl">Medium (10 lots)</div><div class="tv" style="color:var(--acc)">₹4.29 Crore</div>
+        </div>
+        <div class="tier-pill" style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2)">
+          <div class="tl">Large (20 lots)</div><div class="tv" style="color:#a78bfa">₹8.58 Crore</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="result-bar">
+    <div class="rb"><div class="rv" style="color:var(--grn)">84.6%</div><div class="rk">Win Rate</div></div>
+    <div class="rb"><div class="rv" style="color:var(--ylw)">12.79</div><div class="rk">Sharpe Ratio</div></div>
+    <div class="rb"><div class="rv" style="color:var(--grn)">₹4.29 Cr</div><div class="rk">Medium Tier P&L</div></div>
+    <div class="rb"><div class="rv" style="color:var(--acc)">1,579</div><div class="rk">Trades (10 Yrs)</div></div>
+  </div>
+</div>
+
+<!-- ────────────────── S14 ────────────────── -->
+<div class="s-card sell" id="s14">
+  <div class="s-header">
+    <span class="s-num sell">S14</span>
+    <div class="s-title-block">
+      <div class="s-name">Iron Condor Sell — Daily</div>
+      <div class="s-subtitle">Defined-risk premium collection. Sell OTM options, buy further OTM as hedge. Safest sell strategy.</div>
+      <div class="s-tags">
+        <span class="tag sell">SELL</span>
+        <span class="tag daily">Every Day</span>
+        <span class="tag risk-low">Defined Risk</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="s-body">
+    <div class="s-section">
+      <h4>Strategy Logic — 4 Legs</h4>
+      <div class="logic-box">
+        <div class="logic-row"><span class="logic-icon">⏰</span><span class="logic-lbl">Entry</span><span class="logic-val"><code>10:00 AM</code> — after opening noise settles</span></div>
+        <div class="logic-row"><span class="logic-icon">📞</span><span class="logic-lbl">Leg 1</span><span class="logic-val"><b>SELL</b> Call at 0.5% OTM (e.g. 22,100 if Nifty=22,000) → receive premium</span></div>
+        <div class="logic-row"><span class="logic-icon">📞</span><span class="logic-lbl">Leg 2</span><span class="logic-val"><b>BUY</b> Call at 1.5% OTM (e.g. 22,350) → pay premium (hedge)</span></div>
+        <div class="logic-row"><span class="logic-icon">📉</span><span class="logic-lbl">Leg 3</span><span class="logic-val"><b>SELL</b> Put at 0.5% OTM (e.g. 21,900) → receive premium</span></div>
+        <div class="logic-row"><span class="logic-icon">📉</span><span class="logic-lbl">Leg 4</span><span class="logic-val"><b>BUY</b> Put at 1.5% OTM (e.g. 21,650) → pay premium (hedge)</span></div>
+        <div class="logic-row"><span class="logic-icon">💰</span><span class="logic-lbl">Profit Zone</span><span class="logic-val">Nifty stays between <b>21,900 and 22,100</b> (the short strikes)</span></div>
+        <div class="logic-row"><span class="logic-icon">🚪</span><span class="logic-lbl">Exit</span><span class="logic-val"><code>2:30 PM</code> — close all 4 legs</span></div>
+        <div class="logic-row"><span class="logic-icon">🛡️</span><span class="logic-lbl">Max Loss</span><span class="logic-val">Capped at spread width minus net credit received (defined risk!)</span></div>
+      </div>
+    </div>
+    <div class="s-section">
+      <h4>P&L Diagram</h4>
+      <div class="example-box">
+        <div class="ex-title">Nifty = 22,000 at 10:00 AM</div>
+        <div class="ex-row"><span class="ex-key">Sell 22100 CE</span><span class="ex-val ylw">+₹60 received</span></div>
+        <div class="ex-row"><span class="ex-key">Buy  22350 CE</span><span class="ex-val neg">-₹18 paid</span></div>
+        <div class="ex-row"><span class="ex-key">Sell 21900 PE</span><span class="ex-val ylw">+₹58 received</span></div>
+        <div class="ex-row"><span class="ex-key">Buy  21650 PE</span><span class="ex-val neg">-₹20 paid</span></div>
+        <div class="ex-row"><span class="ex-key">Net Credit</span><span class="ex-val ylw">₹80/unit = ₹5,200 (1 lot)</span></div>
+        <div class="ex-row"><span class="ex-key">If Nifty stays 21,900–22,100</span><span class="ex-val pos">+₹5,200 ✓</span></div>
+        <div class="ex-row"><span class="ex-key">Max Loss (if blows through)</span><span class="ex-val neg">-₹11,700 (limited)</span></div>
+      </div>
+      <div class="warn">
+        <span class="warn-icon">🛡️</span>
+        <span>Unlike naked straddle sell, the Iron Condor has <b>capped maximum loss</b>. Even if Nifty crashes 5%, your loss is limited to the spread width. This is the safest sell strategy.</span>
+      </div>
+    </div>
+    <div class="s-section">
+      <h4>Pros & Cons</h4>
+      <div class="pc-grid">
+        <div class="pros"><h5>Pros</h5><ul>
+          <li>Defined maximum loss (safest)</li>
+          <li>84.8% win rate — best of sell strats</li>
+          <li>No stop-loss needed (hedge does it)</li>
+          <li>Works in ranging, sideways markets</li>
+          <li>Lower margin vs naked straddle</li>
+        </ul></div>
+        <div class="cons"><h5>Cons</h5><ul>
+          <li>Lower net credit (hedges cost money)</li>
+          <li>4 legs = 4× transaction costs</li>
+          <li>OTM options have less theta vs ATM</li>
+          <li>Trending days blow through short strikes</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="s-section">
+      <h4>10-Year P&L by Tier</h4>
+      <div class="tier-row">
+        <div class="tier-pill" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2)">
+          <div class="tl">Small (3 lots)</div><div class="tv" style="color:var(--grn)">₹53.7 Lakhs</div>
+        </div>
+        <div class="tier-pill" style="background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2)">
+          <div class="tl">Medium (10 lots)</div><div class="tv" style="color:var(--acc)">₹1.82 Crore</div>
+        </div>
+        <div class="tier-pill" style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2)">
+          <div class="tl">Large (20 lots)</div><div class="tv" style="color:#a78bfa">₹3.65 Crore</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="result-bar">
+    <div class="rb"><div class="rv" style="color:var(--grn)">84.8%</div><div class="rk">Win Rate</div></div>
+    <div class="rb"><div class="rv" style="color:var(--ylw)">9.34</div><div class="rk">Sharpe Ratio</div></div>
+    <div class="rb"><div class="rv" style="color:var(--grn)">₹1.82 Cr</div><div class="rk">Medium Tier P&L</div></div>
+    <div class="rb"><div class="rv" style="color:var(--acc)">1,579</div><div class="rk">Trades (10 Yrs)</div></div>
+  </div>
+</div>
+
+<!-- ────────────────── S15 ────────────────── -->
+<div class="s-card sell" id="s15">
+  <div class="s-header">
+    <span class="s-num sell">S15</span>
+    <div class="s-title-block">
+      <div class="s-name">Mid-Week Strangle Sell</div>
+      <div class="s-subtitle">Highest win rate: 96.1%. Sell slightly OTM options Tue/Wed/Thu when theta is high.</div>
+      <div class="s-tags">
+        <span class="tag sell">SELL</span>
+        <span class="tag cond">Tue / Wed / Thu</span>
+        <span class="tag risk-med">Medium Risk</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="s-body">
+    <div class="s-section">
+      <h4>Strategy Logic</h4>
+      <div class="logic-box">
+        <div class="logic-row"><span class="logic-icon">📅</span><span class="logic-lbl">When</span><span class="logic-val">Tuesday, Wednesday, Thursday only (mid-week, more theta remains)</span></div>
+        <div class="logic-row"><span class="logic-icon">⏰</span><span class="logic-lbl">Entry</span><span class="logic-val"><code>9:30 AM</code> — Sell 1% OTM Call + Sell 1% OTM Put</span></div>
+        <div class="logic-row"><span class="logic-icon">📐</span><span class="logic-lbl">Strikes</span><span class="logic-val">Call strike = 1% above spot | Put strike = 1% below spot</span></div>
+        <div class="logic-row"><span class="logic-icon">🛑</span><span class="logic-lbl">Stop Rule</span><span class="logic-val">Check at <code>1:00 PM</code> — if Nifty moved &gt;1.2% from 9:30 level → exit early</span></div>
+        <div class="logic-row"><span class="logic-icon">🚪</span><span class="logic-lbl">Normal Exit</span><span class="logic-val"><code>2:30 PM</code> if no stop triggered</span></div>
+        <div class="logic-row"><span class="logic-icon">💡</span><span class="logic-lbl">Why 1% OTM</span><span class="logic-val">1% OTM gives wider safety buffer. Nifty must move &gt;1% to touch your strikes.</span></div>
+      </div>
+    </div>
+    <div class="s-section">
+      <h4>Strangle vs Straddle</h4>
+      <div class="example-box">
+        <div class="ex-title">Strangle Sell vs Straddle Sell</div>
+        <div class="ex-row"><span class="ex-key">Straddle (ATM)</span><span class="ex-val">Higher premium, loses if any move</span></div>
+        <div class="ex-row"><span class="ex-key">Strangle (1% OTM)</span><span class="ex-val">Lower premium, larger safety zone</span></div>
+        <div style="margin:10px 0;font-size:0.75rem;color:var(--mut)">Example with Nifty = 22,000:</div>
+        <div class="ex-row"><span class="ex-key">Sell 22,220 CE (1% OTM)</span><span class="ex-val ylw">₹35/unit received</span></div>
+        <div class="ex-row"><span class="ex-key">Sell 21,780 PE (1% OTM)</span><span class="ex-val ylw">₹32/unit received</span></div>
+        <div class="ex-row"><span class="ex-key">Total Credit</span><span class="ex-val ylw">₹67 × 65 = ₹4,355/lot</span></div>
+        <div class="ex-row"><span class="ex-key">Breakeven Range</span><span class="ex-val">21,713 to 22,287</span></div>
+        <div class="ex-row"><span class="ex-key">Win if Nifty stays in range</span><span class="ex-val pos">+₹4,355 ✓</span></div>
+      </div>
+      <div class="warn" style="margin-top:10px">
+        <span class="warn-icon">⚠️</span>
+        <span>Unlike Iron Condor, the strangle has <b>unlimited risk</b> if Nifty moves far. The 1:00 PM stop-loss at 1.2% is essential to manage tail risk.</span>
+      </div>
+    </div>
+    <div class="s-section">
+      <h4>Pros & Cons</h4>
+      <div class="pc-grid">
+        <div class="pros"><h5>Pros</h5><ul>
+          <li>Highest win rate of all: 96.1%</li>
+          <li>Sharpe 14.64 — extremely consistent</li>
+          <li>1% OTM = wide safety buffer</li>
+          <li>Stop-loss limits big losses</li>
+          <li>Only Mon/Tue/Wed/Thu (3 days/week)</li>
+        </ul></div>
+        <div class="cons"><h5>Cons</h5><ul>
+          <li>Unlimited downside if stop fails</li>
+          <li>Trending days hit stops frequently</li>
+          <li>Lower premium than ATM straddle</li>
+          <li>Need 1 PM monitoring for stop</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="s-section">
+      <h4>10-Year P&L by Tier</h4>
+      <div class="tier-row">
+        <div class="tier-pill" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2)">
+          <div class="tl">Small (3 lots)</div><div class="tv" style="color:var(--grn)">₹40.5 Lakhs</div>
+        </div>
+        <div class="tier-pill" style="background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2)">
+          <div class="tl">Medium (10 lots)</div><div class="tv" style="color:var(--acc)">₹1.36 Crore</div>
+        </div>
+        <div class="tier-pill" style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2)">
+          <div class="tl">Large (20 lots)</div><div class="tv" style="color:#a78bfa">₹2.72 Crore</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="result-bar">
+    <div class="rb"><div class="rv" style="color:var(--grn)">96.1%</div><div class="rk">Win Rate</div></div>
+    <div class="rb"><div class="rv" style="color:var(--ylw)">14.64</div><div class="rk">Sharpe Ratio</div></div>
+    <div class="rb"><div class="rv" style="color:var(--grn)">₹1.36 Cr</div><div class="rk">Medium Tier P&L</div></div>
+    <div class="rb"><div class="rv" style="color:var(--acc)">941</div><div class="rk">Trades (10 Yrs)</div></div>
+  </div>
+</div>
+
+</div><!-- end strategies sell -->
+
+<!-- ═══════════════════════════ BUY SECTION ═══════════════════════════ -->
+<div class="divider" id="buy">
+  <div class="divider-inner">
+    <span class="div-label buy">BUY Strategies</span>
+    <div class="div-title">Directional Bets — Buy Call or Put</div>
+  </div>
+</div>
+
+<div class="strategies">
+
+<!-- Quick reference table for buy strategies -->
+<div class="card" style="background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:24px;margin-bottom:28px;overflow-x:auto;">
+  <div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin-bottom:16px;">All BUY Strategy Results (Medium Tier, 10 Lots)</div>
+  <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
+    <thead><tr style="border-bottom:1px solid var(--bdr);">
+      <th style="padding:8px 10px;text-align:left;color:var(--mut);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;">Strategy</th>
+      <th style="padding:8px 10px;text-align:left;color:var(--mut);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;">Entry Time</th>
+      <th style="padding:8px 10px;text-align:center;color:var(--mut);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;">Win Rate</th>
+      <th style="padding:8px 10px;text-align:center;color:var(--mut);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;">Sharpe</th>
+      <th style="padding:8px 10px;text-align:right;color:var(--mut);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;">10-Year P&L</th>
+      <th style="padding:8px 10px;text-align:center;color:var(--mut);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;">Verdict</th>
+    </tr></thead>
+    <tbody>
+      <tr style="border-bottom:1px solid rgba(30,48,80,.4)"><td style="padding:8px 10px"><a href="#s4" style="color:#a78bfa;font-weight:700;text-decoration:none">S4 Monday Gap Reversal</a></td><td style="padding:8px 10px;color:var(--mut)">9:20 AM Mon</td><td style="padding:8px 10px;text-align:center;color:#f59e0b">36.4%</td><td style="padding:8px 10px;text-align:center;color:var(--red)">-1.10</td><td style="padding:8px 10px;text-align:right;color:var(--red);font-weight:600">-₹2.26L</td><td style="padding:8px 10px;text-align:center;font-size:.7rem;color:var(--mut)">Least bad</td></tr>
+      <tr style="border-bottom:1px solid rgba(30,48,80,.4)"><td style="padding:8px 10px"><a href="#s7" style="color:#a78bfa;font-weight:700;text-decoration:none">S7 First Candle</a></td><td style="padding:8px 10px;color:var(--mut)">9:20 AM daily</td><td style="padding:8px 10px;text-align:center;color:#f59e0b">34.1%</td><td style="padding:8px 10px;text-align:center;color:var(--red)">-3.38</td><td style="padding:8px 10px;text-align:right;color:var(--red);font-weight:600">-₹1.07 Cr</td><td style="padding:8px 10px;text-align:center;font-size:.7rem;color:var(--red)">Avoid</td></tr>
+      <tr style="border-bottom:1px solid rgba(30,48,80,.4)"><td style="padding:8px 10px"><a href="#s8" style="color:#a78bfa;font-weight:700;text-decoration:none">S8 10AM Trend</a></td><td style="padding:8px 10px;color:var(--mut)">10:00 AM</td><td style="padding:8px 10px;text-align:center;color:var(--red)">29.7%</td><td style="padding:8px 10px;text-align:center;color:var(--red)">-4.57</td><td style="padding:8px 10px;text-align:right;color:var(--red);font-weight:600">-₹87.1L</td><td style="padding:8px 10px;text-align:center;font-size:.7rem;color:var(--red)">Avoid</td></tr>
+      <tr style="border-bottom:1px solid rgba(30,48,80,.4)"><td style="padding:8px 10px"><a href="#s1" style="color:#a78bfa;font-weight:700;text-decoration:none">S1 ORB-15</a></td><td style="padding:8px 10px;color:var(--mut)">9:30 AM</td><td style="padding:8px 10px;text-align:center;color:var(--red)">8.8%</td><td style="padding:8px 10px;text-align:center;color:var(--red)">-17.97</td><td style="padding:8px 10px;text-align:right;color:var(--red);font-weight:600">-₹2.43 Cr</td><td style="padding:8px 10px;text-align:center;font-size:.7rem;color:var(--red)">Worst</td></tr>
+    </tbody>
+  </table>
+  <div class="warn" style="margin-top:16px">
+    <span class="warn-icon">📊</span>
+    <span><b>Key Finding:</b> All 11 buy strategies lost money over 10 years. The best buy strategy (S4) still lost ₹2.26 Lakhs. This is why <b>selling premium consistently beats buying</b> in Nifty 50 options.</span>
+  </div>
+</div>
+
+<!-- S1 through S12 compact cards -->
+<div id="s1" class="s-card buy" style="padding:0">
+  <div class="s-header" style="padding:20px 24px 14px"><span class="s-num buy">S1</span>
+    <div><div class="s-name">ORB-15 Breakout (Opening Range Breakout)</div>
+    <div class="s-subtitle">Buy the breakout of first 15-minute range. Classic momentum strategy.</div>
+    <div class="s-tags"><span class="tag buy">BUY</span><span class="tag cond">Conditional</span><span class="tag risk-high">High Risk</span></div></div>
+  </div>
+  <div style="padding:0 24px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="logic-box">
+      <div class="logic-row"><span class="logic-icon">⏰</span><span class="logic-lbl">Entry</span><span class="logic-val"><code>9:30 AM</code> — after first 3 candles (9:15, 9:20, 9:25)</span></div>
+      <div class="logic-row"><span class="logic-icon">📐</span><span class="logic-lbl">Range</span><span class="logic-val">High = max(9:15, 9:20, 9:25 closes) | Low = min</span></div>
+      <div class="logic-row"><span class="logic-icon">📞</span><span class="logic-lbl">Signal</span><span class="logic-val">9:30 price &gt; Range High → Buy Call<br>9:30 price &lt; Range Low → Buy Put<br>Inside range → No trade</span></div>
+      <div class="logic-row"><span class="logic-icon">🚪</span><span class="logic-lbl">Exit</span><span class="logic-val"><code>1:00 PM</code></span></div>
+    </div>
+    <div class="example-box">
+      <div class="ex-title">Why it FAILS in backtest</div>
+      <div class="ex-row"><span class="ex-key">Win Rate</span><span class="ex-val neg">8.8% (very bad)</span></div>
+      <div class="ex-row"><span class="ex-key">Problem</span><span class="ex-val neg">Fake breakouts at open</span></div>
+      <div class="ex-row"><span class="ex-key">Theta loss</span><span class="ex-val neg">Premium decays 9:30→1PM</span></div>
+      <div class="ex-row"><span class="ex-key">10Y P&L</span><span class="ex-val neg">-₹2.43 Crore</span></div>
+      <div class="ex-row"><span class="ex-key">Verdict</span><span class="ex-val neg">❌ Do not trade</span></div>
+    </div>
+  </div>
+  <div class="result-bar">
+    <div class="rb"><div class="rv" style="color:var(--red)">8.8%</div><div class="rk">Win Rate</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-17.97</div><div class="rk">Sharpe</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-₹2.43 Cr</div><div class="rk">Med Tier P&L</div></div>
+    <div class="rb"><div class="rv" style="color:var(--acc)">934</div><div class="rk">Trades</div></div>
+  </div>
+</div>
+
+<div id="s2" class="s-card buy" style="padding:0">
+  <div class="s-header" style="padding:20px 24px 14px"><span class="s-num buy">S2</span>
+    <div><div class="s-name">VIX + Overnight Gap Signal</div>
+    <div class="s-subtitle">Use VIX regime and overnight gap to decide direction.</div>
+    <div class="s-tags"><span class="tag buy">BUY</span><span class="tag cond">Conditional</span><span class="tag risk-high">High Risk</span></div></div>
+  </div>
+  <div style="padding:0 24px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="logic-box">
+      <div class="logic-row"><span class="logic-icon">⏰</span><span class="logic-lbl">Entry</span><span class="logic-val"><code>9:20 AM</code></span></div>
+      <div class="logic-row"><span class="logic-icon">📐</span><span class="logic-lbl">Signal</span><span class="logic-val">If VIX &gt; 18%: gap up → Buy Put (fade) | gap down → Buy Call<br>If VIX ≤ 18%: gap up → Buy Call | gap down → Buy Put</span></div>
+      <div class="logic-row"><span class="logic-icon">🔍</span><span class="logic-lbl">Filter</span><span class="logic-val">Gap must be &gt; 0.3% to trigger trade</span></div>
+      <div class="logic-row"><span class="logic-icon">🚪</span><span class="logic-lbl">Exit</span><span class="logic-val"><code>12:30 PM</code></span></div>
+    </div>
+    <div class="example-box">
+      <div class="ex-title">Result Summary</div>
+      <div class="ex-row"><span class="ex-key">Win Rate</span><span class="ex-val neg">26.1%</span></div>
+      <div class="ex-row"><span class="ex-key">10Y P&L</span><span class="ex-val neg">-₹94.6 Lakhs</span></div>
+      <div class="ex-row"><span class="ex-key">Trades</span><span class="ex-val">788 in 10 years</span></div>
+      <div class="ex-row"><span class="ex-key">Issue</span><span class="ex-val neg">VIX signal unreliable intraday</span></div>
+    </div>
+  </div>
+  <div class="result-bar">
+    <div class="rb"><div class="rv" style="color:var(--red)">26.1%</div><div class="rk">Win Rate</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-4.88</div><div class="rk">Sharpe</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-₹94.6L</div><div class="rk">Med Tier P&L</div></div>
+    <div class="rb"><div class="rv" style="color:var(--acc)">788</div><div class="rk">Trades</div></div>
+  </div>
+</div>
+
+<div id="s4" class="s-card buy" style="padding:0">
+  <div class="s-header" style="padding:20px 24px 14px"><span class="s-num buy">S4</span>
+    <div><div class="s-name">Monday Gap Reversal</div>
+    <div class="s-subtitle">Best buy strategy. Fade large Monday gaps — they tend to partially fill.</div>
+    <div class="s-tags"><span class="tag buy">BUY</span><span class="tag cond">Monday Only + Gap &gt;0.5%</span><span class="tag risk-med">Medium Risk</span></div></div>
+  </div>
+  <div style="padding:0 24px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="logic-box">
+      <div class="logic-row"><span class="logic-icon">📅</span><span class="logic-lbl">When</span><span class="logic-val">Monday only AND overnight gap &gt; 0.5%</span></div>
+      <div class="logic-row"><span class="logic-icon">⏰</span><span class="logic-lbl">Entry</span><span class="logic-val"><code>9:20 AM</code></span></div>
+      <div class="logic-row"><span class="logic-icon">📐</span><span class="logic-lbl">Signal</span><span class="logic-val">Gap UP &gt; 0.5% → Buy Put (expect reversal)<br>Gap DOWN &gt; 0.5% → Buy Call (expect reversal)</span></div>
+      <div class="logic-row"><span class="logic-icon">🚪</span><span class="logic-lbl">Exit</span><span class="logic-val"><code>11:00 AM</code> (short 1.5-hr window)</span></div>
+    </div>
+    <div class="example-box">
+      <div class="ex-title">Why Monday gaps often reverse</div>
+      <div class="ex-row"><span class="ex-key">Weekend news</span><span class="ex-val">Market overreacts</span></div>
+      <div class="ex-row"><span class="ex-key">Institutional selling</span><span class="ex-val">Fades weekend gap</span></div>
+      <div class="ex-row"><span class="ex-key">Win Rate</span><span class="ex-val" style="color:#f59e0b">36.4% (best buy)</span></div>
+      <div class="ex-row"><span class="ex-key">10Y P&L</span><span class="ex-val neg">-₹2.26 Lakhs (small loss)</span></div>
+      <div class="ex-row"><span class="ex-key">Trades</span><span class="ex-val">110 over 10 years</span></div>
+    </div>
+  </div>
+  <div class="result-bar">
+    <div class="rb"><div class="rv" style="color:#f59e0b">36.4%</div><div class="rk">Win Rate</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-1.10</div><div class="rk">Sharpe</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-₹2.26L</div><div class="rk">Med Tier P&L</div></div>
+    <div class="rb"><div class="rv" style="color:var(--acc)">110</div><div class="rk">Trades</div></div>
+  </div>
+</div>
+
+<div id="s5" class="s-card buy" style="padding:0">
+  <div class="s-header" style="padding:20px 24px 14px"><span class="s-num buy">S5</span>
+    <div><div class="s-name">3-Day Momentum Buy</div>
+    <div class="s-subtitle">Follow 3 consecutive green or red days as a momentum signal.</div>
+    <div class="s-tags"><span class="tag buy">BUY</span><span class="tag cond">Momentum Filter</span><span class="tag risk-high">High Risk</span></div></div>
+  </div>
+  <div style="padding:0 24px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="logic-box">
+      <div class="logic-row"><span class="logic-icon">📐</span><span class="logic-lbl">Signal</span><span class="logic-val">3 consecutive green days → Buy Call<br>3 consecutive red days → Buy Put</span></div>
+      <div class="logic-row"><span class="logic-icon">⏰</span><span class="logic-lbl">Entry</span><span class="logic-val"><code>9:20 AM</code> | Exit: <code>12:00 PM</code></span></div>
+    </div>
+    <div class="example-box">
+      <div class="ex-row"><span class="ex-key">Win Rate</span><span class="ex-val neg">25.4%</span></div>
+      <div class="ex-row"><span class="ex-key">10Y P&L</span><span class="ex-val neg">-₹56 Lakhs</span></div>
+      <div class="ex-row"><span class="ex-key">Issue</span><span class="ex-val neg">After 3-day run, reversal likely</span></div>
+    </div>
+  </div>
+  <div class="result-bar">
+    <div class="rb"><div class="rv" style="color:var(--red)">25.4%</div><div class="rk">Win Rate</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-6.26</div><div class="rk">Sharpe</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-₹56L</div><div class="rk">Med Tier P&L</div></div>
+    <div class="rb"><div class="rv" style="color:var(--acc)">489</div><div class="rk">Trades</div></div>
+  </div>
+</div>
+
+<div id="s6" class="s-card buy" style="padding:0">
+  <div class="s-header" style="padding:20px 24px 14px"><span class="s-num buy">S6</span>
+    <div><div class="s-name">High-VIX Straddle Buy</div>
+    <div class="s-subtitle">Buy ATM straddle on fear days (VIX &gt; 20). Bet on big move in either direction.</div>
+    <div class="s-tags"><span class="tag buy">BUY STRADDLE</span><span class="tag cond">VIX &gt; 20</span><span class="tag risk-high">High Risk</span></div></div>
+  </div>
+  <div style="padding:0 24px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="logic-box">
+      <div class="logic-row"><span class="logic-icon">🌡️</span><span class="logic-lbl">Filter</span><span class="logic-val">India VIX &gt; 20 (elevated fear)</span></div>
+      <div class="logic-row"><span class="logic-icon">⏰</span><span class="logic-lbl">Entry</span><span class="logic-val"><code>9:20 AM</code> — Buy ATM Call + ATM Put</span></div>
+      <div class="logic-row"><span class="logic-icon">🚪</span><span class="logic-lbl">Exit</span><span class="logic-val"><code>1:00 PM</code></span></div>
+      <div class="logic-row"><span class="logic-icon">💡</span><span class="logic-lbl">Logic</span><span class="logic-val">High VIX = big move expected. Buy straddle to profit from move in either direction.</span></div>
+    </div>
+    <div class="example-box">
+      <div class="ex-row"><span class="ex-key">Win Rate</span><span class="ex-val neg">8.7% (very bad)</span></div>
+      <div class="ex-row"><span class="ex-key">10Y P&L</span><span class="ex-val neg">-₹1 Crore</span></div>
+      <div class="ex-row"><span class="ex-key">Issue</span><span class="ex-val neg">High VIX = expensive premiums. IV crush after event destroys value.</span></div>
+      <div class="ex-row"><span class="ex-key">Note</span><span class="ex-val">Better sell on high VIX days!</span></div>
+    </div>
+  </div>
+  <div class="result-bar">
+    <div class="rb"><div class="rv" style="color:var(--red)">8.7%</div><div class="rk">Win Rate</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-9.41</div><div class="rk">Sharpe</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-₹1 Cr</div><div class="rk">Med Tier P&L</div></div>
+    <div class="rb"><div class="rv" style="color:var(--acc)">389</div><div class="rk">Trades</div></div>
+  </div>
+</div>
+
+<div id="s7" class="s-card buy" style="padding:0">
+  <div class="s-header" style="padding:20px 24px 14px"><span class="s-num buy">S7</span>
+    <div><div class="s-name">First Candle Direction (Daily)</div>
+    <div class="s-subtitle">Use first 5-minute candle color to set directional bias. Entry every day.</div>
+    <div class="s-tags"><span class="tag buy">BUY</span><span class="tag daily">Every Day</span><span class="tag risk-high">High Risk</span></div></div>
+  </div>
+  <div style="padding:0 24px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="logic-box">
+      <div class="logic-row"><span class="logic-icon">📅</span><span class="logic-lbl">When</span><span class="logic-val">Every day — no filter</span></div>
+      <div class="logic-row"><span class="logic-icon">📐</span><span class="logic-lbl">Signal</span><span class="logic-val">9:15 candle close &gt; open → Buy Call<br>9:15 candle close &lt; open → Buy Put</span></div>
+      <div class="logic-row"><span class="logic-icon">⏰</span><span class="logic-lbl">Entry</span><span class="logic-val"><code>9:20 AM</code> | Exit: <code>11:00 AM</code></span></div>
+    </div>
+    <div class="example-box">
+      <div class="ex-row"><span class="ex-key">Win Rate</span><span class="ex-val neg">34.1%</span></div>
+      <div class="ex-row"><span class="ex-key">10Y P&L</span><span class="ex-val neg">-₹1.07 Crore</span></div>
+      <div class="ex-row"><span class="ex-key">Issue</span><span class="ex-val neg">First candle is random noise — not predictive</span></div>
+    </div>
+  </div>
+  <div class="result-bar">
+    <div class="rb"><div class="rv" style="color:var(--red)">34.1%</div><div class="rk">Win Rate</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-3.38</div><div class="rk">Sharpe</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-₹1.07 Cr</div><div class="rk">Med Tier P&L</div></div>
+    <div class="rb"><div class="rv" style="color:var(--acc)">1580</div><div class="rk">Trades</div></div>
+  </div>
+</div>
+
+<div id="s8" class="s-card buy" style="padding:0">
+  <div class="s-header" style="padding:20px 24px 14px"><span class="s-num buy">S8</span>
+    <div><div class="s-name">10AM Confirmed Trend Follow</div>
+    <div class="s-subtitle">Wait for 10AM to confirm trend vs open. Enter only if moved &gt;0.2%.</div>
+    <div class="s-tags"><span class="tag buy">BUY</span><span class="tag cond">Move &gt; 0.2%</span><span class="tag risk-high">High Risk</span></div></div>
+  </div>
+  <div style="padding:0 24px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="logic-box">
+      <div class="logic-row"><span class="logic-icon">📐</span><span class="logic-lbl">Signal</span><span class="logic-val">10:00 AM price vs daily open: &gt;+0.2% → Call | &lt;-0.2% → Put</span></div>
+      <div class="logic-row"><span class="logic-icon">⏰</span><span class="logic-lbl">Timing</span><span class="logic-val">Entry <code>10:00 AM</code> | Exit <code>12:30 PM</code></span></div>
+    </div>
+    <div class="example-box">
+      <div class="ex-row"><span class="ex-key">Win Rate</span><span class="ex-val neg">29.7%</span></div>
+      <div class="ex-row"><span class="ex-key">10Y P&L</span><span class="ex-val neg">-₹87.1 Lakhs</span></div>
+      <div class="ex-row"><span class="ex-key">Issue</span><span class="ex-val neg">Trend confirmed too late — theta eats profit</span></div>
+    </div>
+  </div>
+  <div class="result-bar">
+    <div class="rb"><div class="rv" style="color:var(--red)">29.7%</div><div class="rk">Win Rate</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-4.57</div><div class="rk">Sharpe</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-₹87.1L</div><div class="rk">Med Tier P&L</div></div>
+    <div class="rb"><div class="rv" style="color:var(--acc)">853</div><div class="rk">Trades</div></div>
+  </div>
+</div>
+
+<div id="s9" class="s-card buy" style="padding:0">
+  <div class="s-header" style="padding:20px 24px 14px"><span class="s-num buy">S9</span>
+    <div><div class="s-name">11:30AM Reversal Buy</div>
+    <div class="s-subtitle">Fade the morning move at 11:30 AM if &gt;0.5% from open.</div>
+    <div class="s-tags"><span class="tag buy">BUY</span><span class="tag cond">Move &gt; 0.5%</span><span class="tag risk-high">High Risk</span></div></div>
+  </div>
+  <div style="padding:0 24px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="logic-box">
+      <div class="logic-row"><span class="logic-icon">📐</span><span class="logic-lbl">Signal</span><span class="logic-val">11:30 up &gt;0.5% → Buy Put (reversal) | down &gt;0.5% → Buy Call</span></div>
+      <div class="logic-row"><span class="logic-icon">⏰</span><span class="logic-lbl">Timing</span><span class="logic-val">Entry <code>11:30 AM</code> | Exit <code>1:30 PM</code></span></div>
+    </div>
+    <div class="example-box">
+      <div class="ex-row"><span class="ex-key">Win Rate</span><span class="ex-val neg">25.8%</span></div>
+      <div class="ex-row"><span class="ex-key">10Y P&L</span><span class="ex-val neg">-₹59.7 Lakhs</span></div>
+      <div class="ex-row"><span class="ex-key">Issue</span><span class="ex-val neg">Trends persist; reversals are unpredictable</span></div>
+    </div>
+  </div>
+  <div class="result-bar">
+    <div class="rb"><div class="rv" style="color:var(--red)">25.8%</div><div class="rk">Win Rate</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-6.88</div><div class="rk">Sharpe</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-₹59.7L</div><div class="rk">Med Tier P&L</div></div>
+    <div class="rb"><div class="rv" style="color:var(--acc)">419</div><div class="rk">Trades</div></div>
+  </div>
+</div>
+
+<div id="s10" class="s-card buy" style="padding:0">
+  <div class="s-header" style="padding:20px 24px 14px"><span class="s-num buy">S10</span>
+    <div><div class="s-name">Power Hour Follow (2:15PM)</div>
+    <div class="s-subtitle">Follow the day's trend at 2:15 PM — final hour momentum play.</div>
+    <div class="s-tags"><span class="tag buy">BUY</span><span class="tag daily">Daily</span><span class="tag risk-high">High Risk</span></div></div>
+  </div>
+  <div style="padding:0 24px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="logic-box">
+      <div class="logic-row"><span class="logic-icon">📐</span><span class="logic-lbl">Signal</span><span class="logic-val">2:15 PM price vs daily open: up → Call | down → Put</span></div>
+      <div class="logic-row"><span class="logic-icon">⏰</span><span class="logic-lbl">Timing</span><span class="logic-val">Entry <code>2:15 PM</code> | Exit <code>3:20 PM</code></span></div>
+    </div>
+    <div class="example-box">
+      <div class="ex-row"><span class="ex-key">Win Rate</span><span class="ex-val neg">27.7%</span></div>
+      <div class="ex-row"><span class="ex-key">10Y P&L</span><span class="ex-val neg">-₹1.66 Crore</span></div>
+      <div class="ex-row"><span class="ex-key">Issue</span><span class="ex-val neg">Near-expiry options = massive theta in 1 hour</span></div>
+    </div>
+  </div>
+  <div class="result-bar">
+    <div class="rb"><div class="rv" style="color:var(--red)">27.7%</div><div class="rk">Win Rate</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-7.58</div><div class="rk">Sharpe</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-₹1.66 Cr</div><div class="rk">Med Tier P&L</div></div>
+    <div class="rb"><div class="rv" style="color:var(--acc)">1365</div><div class="rk">Trades</div></div>
+  </div>
+</div>
+
+<div id="s11" class="s-card buy" style="padding:0">
+  <div class="s-header" style="padding:20px 24px 14px"><span class="s-num buy">S11</span>
+    <div><div class="s-name">1.5-Hour Range Breakout</div>
+    <div class="s-subtitle">Calculate first 1.5-hr range, enter when price breaks it at 10:45 AM.</div>
+    <div class="s-tags"><span class="tag buy">BUY</span><span class="tag cond">Breakout Signal</span><span class="tag risk-high">Very High Risk</span></div></div>
+  </div>
+  <div style="padding:0 24px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="logic-box">
+      <div class="logic-row"><span class="logic-icon">📐</span><span class="logic-lbl">Signal</span><span class="logic-val">Range = high/low of 9:15–10:45 AM bars<br>If 10:45 breaks above → Call | below → Put</span></div>
+      <div class="logic-row"><span class="logic-icon">⏰</span><span class="logic-lbl">Timing</span><span class="logic-val">Entry <code>10:45 AM</code> | Exit <code>1:15 PM</code></span></div>
+    </div>
+    <div class="example-box">
+      <div class="ex-row"><span class="ex-key">Win Rate</span><span class="ex-val neg">0.0% (worst)</span></div>
+      <div class="ex-row"><span class="ex-key">10Y P&L</span><span class="ex-val neg">-₹38.9 Lakhs</span></div>
+      <div class="ex-row"><span class="ex-key">Issue</span><span class="ex-val neg">False breakouts after 1.5 hrs — most are fake</span></div>
+    </div>
+  </div>
+  <div class="result-bar">
+    <div class="rb"><div class="rv" style="color:var(--red)">0.0%</div><div class="rk">Win Rate</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-34.65</div><div class="rk">Sharpe</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-₹38.9L</div><div class="rk">Med Tier P&L</div></div>
+    <div class="rb"><div class="rv" style="color:var(--acc)">108</div><div class="rk">Trades</div></div>
+  </div>
+</div>
+
+<div id="s12" class="s-card buy" style="padding:0">
+  <div class="s-header" style="padding:20px 24px 14px"><span class="s-num buy">S12</span>
+    <div><div class="s-name">Morning Surge Scalp (9:45 AM)</div>
+    <div class="s-subtitle">Enter in direction of volatile open if 9:15–9:45 range &gt;0.4%.</div>
+    <div class="s-tags"><span class="tag buy">BUY</span><span class="tag cond">Volatile Open</span><span class="tag risk-high">Very High Risk</span></div></div>
+  </div>
+  <div style="padding:0 24px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="logic-box">
+      <div class="logic-row"><span class="logic-icon">📐</span><span class="logic-lbl">Signal</span><span class="logic-val">Morning range (9:15–9:45) &gt; 0.4% → enter in breakout direction</span></div>
+      <div class="logic-row"><span class="logic-icon">⏰</span><span class="logic-lbl">Timing</span><span class="logic-val">Entry <code>9:45 AM</code> | Exit <code>11:30 AM</code></span></div>
+    </div>
+    <div class="example-box">
+      <div class="ex-row"><span class="ex-key">Win Rate</span><span class="ex-val neg">17.9%</span></div>
+      <div class="ex-row"><span class="ex-key">10Y P&L</span><span class="ex-val neg">-₹2.82 Crore</span></div>
+      <div class="ex-row"><span class="ex-key">Issue</span><span class="ex-val neg">Morning surges often reverse by 11:30AM</span></div>
+    </div>
+  </div>
+  <div class="result-bar">
+    <div class="rb"><div class="rv" style="color:var(--red)">17.9%</div><div class="rk">Win Rate</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-11.73</div><div class="rk">Sharpe</div></div>
+    <div class="rb"><div class="rv" style="color:var(--red)">-₹2.82 Cr</div><div class="rk">Med Tier P&L</div></div>
+    <div class="rb"><div class="rv" style="color:var(--acc)">1526</div><div class="rk">Trades</div></div>
+  </div>
+</div>
+
+</div><!-- end strategies buy -->
+
+<!-- DISCLAIMER -->
+<div class="disclaimer">
+  <div class="dis-box">
+    <h3>⚠️ Important Disclaimer & Risk Warning</h3>
+    <p><b>This is a research/educational backtesting tool only.</b> All results are based on synthetic option prices computed using the Black-Scholes model with historical spot data. Real option prices differ due to liquidity, bid-ask spreads, IV skew, and market impact.</p>
+    <p><b>Selling strategies carry unlimited risk.</b> S13 (Daily Straddle Sell) and S15 (Strangle Sell) have unlimited downside on extreme market days (e.g., March 2020 COVID crash, budget announcements). A single bad day can erase weeks of profit.</p>
+    <p><b>Before trading with real money:</b> (1) Paper trade for minimum 3 months. (2) Start with 1 lot only. (3) Always use hard stop-losses on broker platform. (4) Understand margin requirements — selling options requires ₹1–3 Lakhs margin per lot. (5) Consult a SEBI-registered financial advisor.</p>
+    <p style="color:var(--mut);font-size:.75rem">Data range: 2016–2026 | Nifty 50 Weekly Expiry | Lot size: 65 units | Slippage: 0.5% | Transaction cost: ₹20/trade | Model: Black-Scholes</p>
+  </div>
+</div>
+
+</body>
+</html>
